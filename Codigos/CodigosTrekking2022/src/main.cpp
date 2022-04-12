@@ -44,8 +44,8 @@ void inc (){
 void incR (){
 
 	motorRight.encSignal();
-  Serial.print("Enc 1: ");
-  Serial.println(motorRight.getCount());
+  // Serial.print("Enc 1: ");
+  // Serial.println(motorRight.getCount());
 }
 
 
@@ -53,18 +53,26 @@ void setup() {
   Serial.begin(9600);
   attachInterrupt(digitalPinToInterrupt(pin1Enc), incR, RISING);
   attachInterrupt(digitalPinToInterrupt(pin2Enc), inc, RISING);
-  motorRight.fwd(50);
-  motorLeft.fwd(50);
+  motorRight.fwd(120);
+  motorLeft.fwd(120);
 }
 
 
+void testPrint() {
+  Serial.print("Enc 2: ");
+  int vari = motorLeft.getCount();
+  Serial.println(vari);
+  //delay(1000);
+}
+
 void loop() {
+  testPrint();
+  if(motorLeft.getCount() > 1000) {
+    motorRight.stop();
+    motorLeft.stop();
+  }
   // -------------------------------------------------------------------------------------------------------------
   // Código de teste dos Motores
-  
-  Serial.print("Enc 2: ");
-  Serial.println(motorLeft.getCount());
-
   // delay(2000);
   // motorRight.stop();
   // motorLeft.stop();
