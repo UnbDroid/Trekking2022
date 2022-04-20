@@ -61,6 +61,7 @@ float giro = 0;
 float mR;
 float mL;
 unsigned long tsart;
+long powerRightL = 60;
 
 void inc (){
 
@@ -90,17 +91,19 @@ void setup() {
 
 void loop() {
 
+
+
+	long angular = ((gyroscope.filter(10, EIXO_Z)));
 	Serial.print("eixo z:");
-	Serial.print(gyroscope.filter(10, EIXO_Z));
+	Serial.print(angular);
 	Serial.print("\n");
 	delay(500); 
 
-
-  /*
+  
   while(millis()- tsart < 5000){
 
   }
-  moveAllpid(60, &motorLeft, &motorRight, &soma, error, giro);
-  */
+  moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, angular, &powerRightL);
+  
+  
 }
-

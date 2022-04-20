@@ -23,7 +23,7 @@ void moveAll(int potencia, MotorDC *motorLeft, MotorDC *motorRight);
   Descricao: Desliga os dois motores.
 */
 
-void moveAllpid(int _potencia, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, float giro);
+void moveAllpid(int _potencia, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, float giro, long *powerRightL);
 
 void moveRevAll(int potencia, MotorDC *motorLeft, MotorDC *motorRight);
 
@@ -72,5 +72,8 @@ void FowardCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight
 */
 
 void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight);
+
+void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long* powerRightL);
+
 
 #endif
