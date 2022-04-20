@@ -94,16 +94,23 @@ void loop() {
 
 
 	long angular = ((gyroscope.filter(10, EIXO_Z)));
-	Serial.print("eixo z:");
-	Serial.print(angular);
-	Serial.print("\n");
+// 	Serial.print("eixo z:");
+// 	Serial.print(angular);
+// 	Serial.print("\n");
 	delay(500); 
 
   
   while(millis()- tsart < 5000){
 
   }
-  moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, angular, &powerRightL);
-  
+	// turnDegrees(60, 90, HORARIO, &motorLeft, &motorRight);
+  	// FowardCm(80, 1800, &motorLeft, &motorRight, &soma, error, angular, &powerRightL);
+  	moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, angular, &powerRightL);
+	
+	Serial.print("Esquerda: ");
+	Serial.println(motorLeft.getCount());
+	Serial.print("Direita: ");
+	Serial.println(motorRight.getCount());
+
   
 }

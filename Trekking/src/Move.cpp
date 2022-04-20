@@ -19,6 +19,7 @@ float time1 = millis();
 void moveAll(int _power, MotorDC *motorLeft, MotorDC *motorRight) {
   motorLeft->fwd(_power);
   motorRight->fwd(_power);
+  // motorRight->fwd(_power-35);
 }
 
 
@@ -163,21 +164,28 @@ void turnDegrees(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorD
 }
 
 //Andar para frente uma certa distância.
-void FowardCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight) {
+void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, long gyroValue,long *powerRightL) {
+  // ------------------------------------------------------------------------------------------------
+  // A funcao moveAllpidGyro nao funciona quando chama aqui dentro, ai pra testar a gente
+  // mudou na moveAll para o direito andar com _power-30
+  // E nao mudamos o valor de GIRO, ai por isso ta andando um pouco mais do que o valor especificado,
+  // tem que ver um jeito melhor de medir o GIRO
+  // ------------------------------------------------------------------------------------------------
 
   int countLeftInitial = motorLeft->getCount();
   int countLeftUpdate = motorLeft->getCount();
-  int c = DIAMETER*PI;
-  int move = (_distance*GIRO)/c;
+  long c = DIAMETER*PI;
+  long move = (_distance*GIRO)/c;
 
   moveAll(_power, motorLeft, motorRight);
+  // moveAllpidGyro(_power, motorLeft, motorRight, soma, error, gyroValue, powerRightL);
 
 //Enquanto distância entre o enconder atual e o inicial não for o desejado (MOVE) ele vai continuar andando pra frente.
   while((countLeftUpdate - countLeftInitial) < move ) {
     moveAll(_power, motorLeft, motorRight);
+    // moveAllpidGyro(_power, motorLeft, motorRight, soma, error, gyroValue, powerRightL);
     countLeftUpdate = motorLeft->getCount();
   }
-
   stopAll(motorLeft, motorRight);
 }
 
@@ -216,7 +224,7 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   
   error[0] = (gyroValue - valueRef);// - giro; // diferença entre os encoderes sendo o error atual
   error[1] = millis();
-  Serial.println(error[0]);
+  // Serial.println(error[0]);
 
   deltaT = (error[1] - lastT)/1000;
 
@@ -231,10 +239,10 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
 
   powerLeft = abs(_power);
   powerRight = abs((*powerRightL)) + (error[0]*kp) + (*soma)*ki;
-  Serial.println("LEFT");
-  Serial.println(powerLeft);
-  Serial.println("right");
-  Serial.println(powerRight);
+  // Serial.println("LEFT");
+  // Serial.println(powerLeft);
+  // Serial.println("right");
+  // Serial.println(powerRight);
 
   powerLeft = (powerLeft > 255) ? 255 : powerLeft;
   powerRight = (powerRight > 255) ? 255 : powerRight;

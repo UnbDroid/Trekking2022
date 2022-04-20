@@ -5,10 +5,11 @@
 
 #define HORARIO 0
 #define ANTIHORARIO 1
-#define DIAMETER 11 //roda tem 5,5cm de diametro
-//#define PI 3.14159265359
+#define DIAMETER 12 //roda tem 12,22cm de diametro
+#define PI 3.14159265359
 #define GIRO 400 //o enconder conta 400 para dar 1 giro na roda
-#define WDIST 5 //distancia entre as duas rodas em cm
+// #define WDIST 5 //distancia entre as duas rodas em cm
+#define WDIST 12 //distancia entre as duas rodas em cm
 
 /* Move All
   Descricao: Liga os dois motor6es.
@@ -62,7 +63,7 @@ void turnDegrees(int _power, int _degrees, int _clock, MotorDC *motorLeft, Motor
     - distancia: Distância em centímetros.
 */
 
-void FowardCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight);
+void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, long gyroValue,long *powerRightL);
 
 /* Rev Cm
   Descricao: Anda para trás uma certa quantidade de centímetros.
