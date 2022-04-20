@@ -2,8 +2,16 @@
 #include <Move.h>
 #include <math.h>
 
-#define kp 0.4
+#define kp 0.05
+#define ki 0.0075
+
+
+/*Encoder
+
+#define kp 0.2
 #define ki 0.001
+
+*/
 float time1 = millis();
 
 
@@ -11,11 +19,12 @@ float time1 = millis();
 void moveAll(int _power, MotorDC *motorLeft, MotorDC *motorRight) {
   motorLeft->fwd(_power);
   motorRight->fwd(_power);
+  // motorRight->fwd(_power-35);
 }
 
 
 //Função que move as duas para frente, porém usando o PID.
-void moveAllpid(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, float giro) {
+void moveAllpid(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, float giro, long *powerRightL) {
   float powerLeft;
   float powerRight;
 
@@ -41,7 +50,7 @@ void moveAllpid(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma
   }
 
   powerLeft = abs(_power);
-  powerRight = abs(_power) + (error[0]*kp); //+ (*soma)*ki;
+  powerRight = abs((*powerRightL)) + (error[0]*kp) + (*soma)*ki;
   Serial.println("LEFT");
   Serial.println(powerLeft);
   Serial.println("right");
@@ -54,6 +63,7 @@ void moveAllpid(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma
 
   motorLeft->fwd(powerLeft);
   motorRight->fwd(powerRight);
+  *powerRightL = powerRight;
 
   //Quando a potência era negativa, adotamos que o robô andaria para trás
   if(_power < 0){
@@ -154,21 +164,28 @@ void turnDegrees(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorD
 }
 
 //Andar para frente uma certa distância.
-void FowardCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight) {
+void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, long gyroValue,long *powerRightL) {
+  // ------------------------------------------------------------------------------------------------
+  // A funcao moveAllpidGyro nao funciona quando chama aqui dentro, ai pra testar a gente
+  // mudou na moveAll para o direito andar com _power-30
+  // E nao mudamos o valor de GIRO, ai por isso ta andando um pouco mais do que o valor especificado,
+  // tem que ver um jeito melhor de medir o GIRO
+  // ------------------------------------------------------------------------------------------------
 
   int countLeftInitial = motorLeft->getCount();
   int countLeftUpdate = motorLeft->getCount();
-  int c = DIAMETER*PI;
-  int move = (_distance*GIRO)/c;
+  long c = DIAMETER*PI;
+  long move = (_distance*GIRO)/c;
 
   moveAll(_power, motorLeft, motorRight);
+  // moveAllpidGyro(_power, motorLeft, motorRight, soma, error, gyroValue, powerRightL);
 
 //Enquanto distância entre o enconder atual e o inicial não for o desejado (MOVE) ele vai continuar andando pra frente.
   while((countLeftUpdate - countLeftInitial) < move ) {
     moveAll(_power, motorLeft, motorRight);
+    // moveAllpidGyro(_power, motorLeft, motorRight, soma, error, gyroValue, powerRightL);
     countLeftUpdate = motorLeft->getCount();
   }
-
   stopAll(motorLeft, motorRight);
 }
 
@@ -186,4 +203,74 @@ void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight) {
   }
 
   stopAll(motorLeft, motorRight);
+}
+
+
+
+void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL) {
+  float powerLeft;
+  float powerRight;
+
+  float lastT = error[1];
+  float lastE = error[0];
+  float deltaT;
+
+
+  float valueRef = 0;
+  if(gyroValue <= 12 && gyroValue >= -12)
+  {
+    gyroValue = 0;
+  }
+  
+  error[0] = (gyroValue - valueRef);// - giro; // diferença entre os encoderes sendo o error atual
+  error[1] = millis();
+  // Serial.println(error[0]);
+
+  deltaT = (error[1] - lastT)/1000;
+
+  *soma = (*soma)*0.6 + error[0]*deltaT;
+
+  if((*soma)*ki > 10){
+    *soma = 10/ki;
+  }
+  else if((*soma)*ki < -10){
+    *soma = -10/ki;
+  }
+
+  powerLeft = abs(_power);
+  powerRight = abs((*powerRightL)) + (error[0]*kp) + (*soma)*ki;
+  // Serial.println("LEFT");
+  // Serial.println(powerLeft);
+  // Serial.println("right");
+  // Serial.println(powerRight);
+
+  powerLeft = (powerLeft > 255) ? 255 : powerLeft;
+  powerRight = (powerRight > 255) ? 255 : powerRight;
+  powerLeft = (powerLeft < 0) ? 0 : powerLeft;
+  powerRight = (powerRight < 0) ? 0 : powerRight;
+
+  motorLeft->fwd(powerLeft);
+  motorRight->fwd(powerRight);
+  *powerRightL = powerRight;
+
+  //Quando a potência era negativa, adotamos que o robô andaria para trás
+  if(_power < 0){
+
+    if((error[1] - time1) > 3500){
+      motorLeft->rev(powerLeft);
+      motorRight->rev(powerRight);
+    } else {
+      motorLeft->rev(50);
+      motorRight->rev(50);
+    }
+
+  }else{
+    if((error[1] - time1) > 3500){
+      motorLeft->fwd(powerLeft);
+      motorRight->fwd(powerRight);
+    } else {
+      motorLeft->fwd(50);
+      motorRight->fwd(50);
+    }
+  }
 }

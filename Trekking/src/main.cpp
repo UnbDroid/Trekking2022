@@ -61,6 +61,7 @@ float giro = 0;
 float mR;
 float mL;
 unsigned long tsart;
+long powerRightL = 60;
 
 void inc (){
 
@@ -90,17 +91,26 @@ void setup() {
 
 void loop() {
 
-	Serial.print("eixo z:");
-	Serial.print(gyroscope.filter(10, EIXO_Z));
-	Serial.print("\n");
+
+
+	long angular = ((gyroscope.filter(10, EIXO_Z)));
+// 	Serial.print("eixo z:");
+// 	Serial.print(angular);
+// 	Serial.print("\n");
 	delay(500); 
 
-
-  /*
+  
   while(millis()- tsart < 5000){
 
   }
-  moveAllpid(60, &motorLeft, &motorRight, &soma, error, giro);
-  */
-}
+	// turnDegrees(60, 90, HORARIO, &motorLeft, &motorRight);
+  	// FowardCm(80, 1800, &motorLeft, &motorRight, &soma, error, angular, &powerRightL);
+  	moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, angular, &powerRightL);
+	
+	Serial.print("Esquerda: ");
+	Serial.println(motorLeft.getCount());
+	Serial.print("Direita: ");
+	Serial.println(motorRight.getCount());
 
+  
+}
