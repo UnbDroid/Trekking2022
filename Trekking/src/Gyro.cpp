@@ -21,6 +21,7 @@ long Gyro::requestData(int valorEixo){
 
   for(int i = 0; i <= 6; i++){
       data[i] = Wire.read()<<8|Wire.read();
+      //Serial.println(data[i]);
   }
 
     return data[valorEixo];

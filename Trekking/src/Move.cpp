@@ -239,10 +239,79 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
 
   powerLeft = abs(_power);
   powerRight = abs((*powerRightL)) + (error[0]*kp) + (*soma)*ki;
-  // Serial.println("LEFT");
-  // Serial.println(powerLeft);
-  // Serial.println("right");
-  // Serial.println(powerRight);
+  Serial.println("LEFT");
+  Serial.println(powerLeft);
+  Serial.println("right");
+  Serial.println(powerRight);
+
+  powerLeft = (powerLeft > 255) ? 255 : powerLeft;
+  powerRight = (powerRight > 255) ? 255 : powerRight;
+  powerLeft = (powerLeft < 0) ? 0 : powerLeft;
+  powerRight = (powerRight < 0) ? 0 : powerRight;
+
+  motorLeft->fwd(powerLeft);
+  motorRight->fwd(powerRight);
+  *powerRightL = powerRight;
+
+  //Quando a potência era negativa, adotamos que o robô andaria para trás
+  if(_power < 0){
+
+    if((error[1] - time1) > 3500){
+      motorLeft->rev(powerLeft);
+      motorRight->rev(powerRight);
+    } else {
+      motorLeft->rev(50);
+      motorRight->rev(50);
+    }
+
+  }else{
+    if((error[1] - time1) > 3500){
+      motorLeft->fwd(powerLeft);
+      motorRight->fwd(powerRight);
+    } else {
+      motorLeft->fwd(50);
+      motorRight->fwd(50);
+    }
+  }
+}
+
+
+void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL, float valueRef) {
+  float powerLeft;
+  float powerRight;
+
+  float lastT = error[1];
+  float lastE = error[0];
+  float deltaT;
+
+
+  //float valueRef = 0;
+  /*if(gyroValue <= 12 && gyroValue >= -12)
+  {
+    gyroValue = 0;
+  }*/
+
+  error[0] = (gyroValue - valueRef);// - giro; // diferença entre os encoderes sendo o error atual
+  error[1] = millis();
+  // Serial.println(error[0]);
+
+  deltaT = (error[1] - lastT)/1000;
+
+  *soma = (*soma)*0.6 + error[0]*deltaT;
+
+  if((*soma)*ki > 10){
+    *soma = 10/ki;
+  }
+  else if((*soma)*ki < -10){
+    *soma = -10/ki;
+  }
+
+  powerLeft = abs(_power);
+  powerRight = abs((*powerRightL)) + (error[0]*kp) + (*soma)*ki;
+  Serial.println("LEFT");
+  Serial.println(powerLeft);
+  Serial.println("right");
+  Serial.println(powerRight);
 
   powerLeft = (powerLeft > 255) ? 255 : powerLeft;
   powerRight = (powerRight > 255) ? 255 : powerRight;

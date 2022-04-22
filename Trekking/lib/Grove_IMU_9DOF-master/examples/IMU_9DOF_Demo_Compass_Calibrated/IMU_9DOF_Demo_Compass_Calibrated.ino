@@ -1,84 +1,33 @@
-#include <Arduino.h>
-#include <MotorDC.h>
-#include <SensorColor.h>
-#include <Ultrasonic.h>
-#include <Move.h>
-#include <Gyro.h>
-#include <MPU6050.h>
-#include <I2Cdev.h>
+#include "Wire.h"
 
+// I2Cdev and MPU6050 must be installed as libraries, or else the .cpp/.h files
+// for both classes must be in the include path of your project
+#include "I2Cdev.h"
+#include "MPU6050.h"
 
-// Motor Direita
-#define pin1A 5
-#define pin1B 6
-#define pin1pwm 7
-#define pin1Enc A0
-
-// Motor Esquerda
-#define pin2A 8
-#define pin2B 9
-#define pin2pwm 10
-#define pin2Enc A1
-
-//Ultrassom Frente
-#define pinFrontTrigger 52
-#define pinFrontEcho 53
-
-//Ultrassom Esquerda
-#define pinLeftTrigger 50
-#define pinLeftEcho 51
-
-//Ultrassom Direita
-#define pinRightTrigger 48
-#define pinRightEcho 49
-
-// Sensor de cor esquerda
-#define pinColorLeftS0 44
-#define pinColorLeftS1 45
-#define pinColorLeftS2 46
-#define pinColorLeftS3 47
-#define pinColorLeftOut 43
-
-
-#define EIXO_X 0
-#define EIXO_Y 1
-#define EIXO_Z 2
-
-int firstReading = true;
-
+// class default I2C address is 0x68
+// specific I2C addresses may be passed as a parameter here
+// AD0 low = 0x68 (default for InvenSense evaluation board)
+// AD0 high = 0x69
 MPU6050 accelgyro;
 I2Cdev   I2C_M;
 
-MotorDC motorRight (5, 7, 8, 18); 
-MotorDC motorLeft (6, 4, 9, 2);
-
-Ultrasonic SensorUltraFront(pinFrontTrigger, pinFrontEcho);
-Ultrasonic SensorUltraLeft(pinLeftTrigger, pinLeftEcho);
-Ultrasonic SensorUltraRight(pinRightTrigger, pinRightEcho);
-
-SensorColor SensorColorLeft(pinColorLeftS0, pinColorLeftS1, pinColorLeftS2, pinColorLeftS3, pinColorLeftOut);
-
-Gyro gyroscope;
-
-//Declaração de variáveis que serão parâmetros na função moveAllpid.
-float soma = 0;
-float error [2];
-float giro = 0;
-float mR;
-float mL;
-unsigned long tsart;
-long powerRightL = 60;
-
 uint8_t buffer_m[6];
+
+
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
 int16_t   mx, my, mz;
+
+
+
 float heading;
 float tiltheading;
 
 float Axyz[3];
 float Gxyz[3];
 float Mxyz[3];
+
 
 #define sample_num_mdate  5000
 
@@ -99,92 +48,107 @@ volatile int my_min = 0;
 volatile int mz_min = 0;
 
 
-void inc (){
-
-  motorLeft.encSignal();
-  
-}
-
-void incR (){
-
-	motorRight.encSignal();
-}
-
-void getAccel_Data();
-void Mxyz_init_calibrated();
-void getGyro_Data();
-void getCompassDate_calibrated();
-void get_calibration_Data();
-void get_one_sample_date_mxyz();
-void getCompass_Data();
-
 void setup() {
-	tsart = millis();
-  	Serial.begin(9600);
-  	attachInterrupt(digitalPinToInterrupt(2), inc, RISING);
-	attachInterrupt(digitalPinToInterrupt(18), incR, RISING);
-  	error[0] = 0;
-	error[1] = millis();
-	Wire.begin();
-   // Wire.beginTransmission(0x68);  //Inicia transmissão para o endereço do MPU
-   // Wire.write(0x6B);
-   // Wire.write(0); 
-   // Wire.endTransmission(true);
-   accelgyro.initialize();
+    // join I2C bus (I2Cdev library doesn't do this automatically)
+    Wire.begin();
 
-//    Mxyz_init_calibrated(); //para calibrar
+    // initialize serial communication
+    // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
+    // it's really up to you depending on your project)
+    Serial.begin(38400);
+    
+    // initialize device
+    while(!Serial);
+    Serial.println("Initializing I2C devices...");
+    accelgyro.initialize();
+
+    // verify connection
+    Serial.println("Testing device connections...");
+    Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
+
+    delay(1000);
+    Serial.println("     ");
+
+    Mxyz_init_calibrated();
+
 }
-
 
 void loop() {
 
-	while(millis()- tsart < 5000){	
+    getAccel_Data();
+    getGyro_Data();
+    getCompassDate_calibrated(); // compass data has been calibrated here
+    getHeading();				//before we use this function we should run 'getCompassDate_calibrated()' frist, so that we can get calibrated data ,then we can get correct angle .
+    getTiltHeading();
 
-	}
-	/*
-	long angular = ((gyroscope.filter(1, EIXO_Z)));
-	Serial.print("eixo z:");
-	Serial.print(angular);
-	Serial.print("\n");
-	*/
-	// getAccel_Data();
-    // getGyro_Data();
-	getCompassDate_calibrated();
-	if (firstReading){
-		float valueRef = Mxyz[1];
-		firstReading = false;
-	}
-	
-	//moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, angular, &powerRightL, valueRef);
-	Serial.println("Compass Value of X,Y,Z:");
+    Serial.println("calibration parameter: ");
+    Serial.print(mx_centre);
+    Serial.print("         ");
+    Serial.print(my_centre);
+    Serial.print("         ");
+    Serial.println(mz_centre);
+    Serial.println("     ");
+
+
+    Serial.println("Acceleration(g) of X,Y,Z:");
+    Serial.print(Axyz[0]);
+    Serial.print(",");
+    Serial.print(Axyz[1]);
+    Serial.print(",");
+    Serial.println(Axyz[2]);
+    Serial.println("Gyro(degress/s) of X,Y,Z:");
+    Serial.print(Gxyz[0]);
+    Serial.print(",");
+    Serial.print(Gxyz[1]);
+    Serial.print(",");
+    Serial.println(Gxyz[2]);
+    Serial.println("Compass Value of X,Y,Z:");
     Serial.print(Mxyz[0]);
     Serial.print(",");
     Serial.print(Mxyz[1]);
     Serial.print(",");
     Serial.println(Mxyz[2]);
-	// Serial.println("Acceleration(g) of X,Y,Z:");
-    // Serial.print(Axyz[0]);
-    // Serial.print(",");
-    // Serial.print(Axyz[1]);
-    // Serial.print(",");
-    // Serial.println(Axyz[2]);
+    Serial.println("The clockwise angle between the magnetic north and X-Axis:");
+    Serial.print(heading);
+    Serial.println(" ");
+    Serial.println("The clockwise angle between the magnetic north and the projection of the positive X-Axis in the horizontal plane:");
+    Serial.println(tiltheading);
+    Serial.println("   ");
+    Serial.println("   ");
+    Serial.println("   ");
 
-	delay(2500); 
 
-  
-  
 
-	// turnDegrees(60, 90, HORARIO, &motorLeft, &motorRight);
-  	// FowardCm(80, 1800, &motorLeft, &motorRight, &soma, error, angular, &powerRightL);
-  	//moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, angular, &powerRightL);
-	
-	// Serial.print("Esquerda: ");verme pret laranj amarel
-	// Serial.println(motorLeft.getCount());
-	// Serial.print("Direita: ");
-	// Serial.println(motorRight.getCount());
+    delay(300);
 
-  
+
+
+
+
 }
+
+
+void getHeading(void) {
+    heading = 180 * atan2(Mxyz[1], Mxyz[0]) / PI;
+    if (heading < 0) {
+        heading += 360;
+    }
+}
+
+void getTiltHeading(void) {
+    float pitch = asin(-Axyz[0]);
+    float roll = asin(Axyz[1] / cos(pitch));
+
+    float xh = Mxyz[0] * cos(pitch) + Mxyz[2] * sin(pitch);
+    float yh = Mxyz[0] * sin(roll) * sin(pitch) + Mxyz[1] * cos(roll) - Mxyz[2] * sin(roll) * cos(pitch);
+    float zh = -Mxyz[0] * cos(roll) * sin(pitch) + Mxyz[1] * sin(roll) + Mxyz[2] * cos(roll) * cos(pitch);
+    tiltheading = 180 * atan2(yh, xh) / PI;
+    if (yh < 0) {
+        tiltheading += 360;
+    }
+}
+
+
 
 void Mxyz_init_calibrated() {
 
