@@ -147,8 +147,8 @@ void loop() {
 	Serial.print(angular);
 	Serial.print("\n");
 	*/
-	// getAccel_Data();
-    // getGyro_Data();
+	getAccel_Data();
+    getGyro_Data();
 	getCompassDate_calibrated();
 	if (firstReading){
 		float valueRef = Mxyz[1];
