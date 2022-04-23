@@ -207,20 +207,21 @@ void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight) {
 
 
 
-void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL) {
+void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL, int valueRef, unsigned long *tPrint) {
   float powerLeft;
   float powerRight;
+
 
   float lastT = error[1];
   float lastE = error[0];
   float deltaT;
 
 
-  float valueRef = 0;
-  if(gyroValue <= 12 && gyroValue >= -12)
-  {
-    gyroValue = 0;
-  }
+  // float valueRef = 0;
+  // if(gyroValue <= 125 && gyroValue >= 80)
+  // {
+  //   gyroValue = 0;
+  // }
   
   error[0] = (gyroValue - valueRef);// - giro; // diferença entre os encoderes sendo o error atual
   error[1] = millis();
@@ -238,11 +239,22 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   }
 
   powerLeft = abs(_power);
-  powerRight = abs((*powerRightL)) + (error[0]*kp) + (*soma)*ki;
-  Serial.println("LEFT");
-  Serial.println(powerLeft);
-  Serial.println("right");
-  Serial.println(powerRight);
+  powerRight = abs((*powerRightL)) + (error[0]*kp);// + (*soma)*ki;
+
+  if(millis() - *tPrint > 100) {
+      *tPrint = millis();
+      if(error[0] > 0){
+        Serial.println("LEFT");
+      } else {
+        Serial.println("RIGHT");
+      }
+
+      // Serial.println();
+      // Serial.println("LEFT");
+      // Serial.println(powerLeft);
+      // Serial.println("right");
+      // Serial.println(powerRight);
+      }
 
   powerLeft = (powerLeft > 255) ? 255 : powerLeft;
   powerRight = (powerRight > 255) ? 255 : powerRight;
