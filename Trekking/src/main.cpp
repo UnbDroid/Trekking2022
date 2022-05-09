@@ -1,10 +1,10 @@
 #include <Arduino.h>
-#include "MPU9250.h"
 #include <MotorDC.h>
 #include <SensorColor.h>
 #include <Ultrasonic.h>
 #include <Move.h>
 #include <Gyro.h>
+#include <Wire.h>
 
 // Motor Direita
 #define pin1A 5
@@ -37,7 +37,7 @@
 #define pinColorLeftS3 47
 #define pinColorLeftOut 43
 
-
+#define address 0x1E 
 #define EIXO_X 0
 #define EIXO_Y 1
 #define EIXO_Z 2
@@ -48,8 +48,6 @@ int valueRefer;
 
 MotorDC motorRight (5, 7, 8, 18); 
 MotorDC motorLeft (6, 4, 9, 2);
-
-MPU9250 mpu;
 
 float soma = 0;
 float error [2];
@@ -62,61 +60,7 @@ long teste[6];
 int testIndex = 0;
 long medTeste;
 unsigned long tPrint;
-
-void print_roll_pitch_yaw() {
-    Serial.print("Yaw, Pitch, Roll: ");
-    Serial.print(mpu.getYaw(), 2);
-    Serial.print(", ");
-    Serial.print(mpu.getPitch(), 2);
-    Serial.print(", ");
-    Serial.print(mpu.getRoll(), 2);
-    Serial.print("  ");
-    Serial.print("Mag : ");
-    Serial.print(mpu.getMagX(), 2);
-    Serial.print(", ");
-    Serial.print(mpu.getMagY(), 2);
-    Serial.print(", ");
-    Serial.print(mpu.getMagZ(), 2);
-    Serial.print(", ");
-    Serial.print("lin_acc = ");
-    Serial.print(mpu.getLinearAccX(), 2);
-    Serial.print(", ");
-    Serial.print(mpu.getLinearAccY(), 2);
-    Serial.print(", ");
-    Serial.println(mpu.getLinearAccZ(), 2);
-}
-
-void print_calibration() {
-    Serial.println("< calibration parameters >");
-    Serial.println("accel bias [g]: ");
-    Serial.print(mpu.getAccBiasX() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-    Serial.print(", ");
-    Serial.print(mpu.getAccBiasY() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-    Serial.print(", ");
-    Serial.print(mpu.getAccBiasZ() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-    Serial.println();
-    Serial.println("gyro bias [deg/s]: ");
-    Serial.print(mpu.getGyroBiasX() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-    Serial.print(", ");
-    Serial.print(mpu.getGyroBiasY() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-    Serial.print(", ");
-    Serial.print(mpu.getGyroBiasZ() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-    Serial.println();
-    Serial.println("mag bias [mG]: ");
-    Serial.print(mpu.getMagBiasX());
-    Serial.print(", ");
-    Serial.print(mpu.getMagBiasY());
-    Serial.print(", ");
-    Serial.print(mpu.getMagBiasZ());
-    Serial.println();
-    Serial.println("mag scale []: ");
-    Serial.print(mpu.getMagScaleX());
-    Serial.print(", ");
-    Serial.print(mpu.getMagScaleY());
-    Serial.print(", ");
-    Serial.print(mpu.getMagScaleZ());
-    Serial.println();
-}
+int x,y,z;
 
 void inc (){
 
@@ -131,67 +75,52 @@ void incR (){
 
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
     Wire.begin();
+    
+    // Inicializa o HMC5883
+    Wire.beginTransmission(address);
+    // Seleciona o modo
+    Wire.write(0x02); 
+    // Modo de medicao continuo
+    Wire.write(0x00); 
+    Wire.endTransmission();
+  
     delay(2000);
     tPrint = millis();
-
-    if (!mpu.setup(0x68)) {  // change to your own address
-        while (1) {
-            Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
-            delay(5000);
-        }
-    }
-
-    // // calibrate anytime you want to
-    // Serial.println("Accel Gyro calibration will start in 5sec.");
-    // Serial.println("Please leave the device still on the flat plane.");
-    // mpu.verbose(true);
-    // delay(5000);
-    // mpu.calibrateAccelGyro();
-
-    // Serial.println("Mag calibration will start in 5sec.");
-    // Serial.println("Please Wave device in a figure eight until done.");
-    // delay(5000);
-    // mpu.calibrateMag();
-
-    // print_calibration();
-    // mpu.verbose(false);
 }
 
 void loop() {
-    if (mpu.update()) {
-        static uint32_t prev_ms = millis();
-        if (millis() > prev_ms + 25) {
-            //print_roll_pitch_yaw();
-            
-            teste[testIndex] = mpu.getYaw();
-            testIndex = (testIndex == 4) ? 0 : testIndex+1;
-            prev_ms = millis();
-        }
-    }
-    //Serial.println(teste[0]);
-    //Serial.println(mpu.getEulerX());
-    //Serial.println(mpu.getEulerY());
-    //Serial.println(mpu.getEulerZ());
-    //Serial.println(mpu.getEulerZ());
-    if(millis() - tPrint > 500) {
-      tPrint = millis();
-      //print_calibration();
-      Serial.println(mpu.getMagY());
 
-      // Serial.println();
-      // Serial.println("LEFT");
-      // Serial.println(powerLeft);
-      // Serial.println("right");
-      // Serial.println(powerRight);
-      }
-    
-    //Serial.println();   
-   
+  // Indica ao HMC5883 para iniciar a leitura
+  Wire.beginTransmission(address);
+  Wire.write(0x03); //select register 3, X MSB register
+  Wire.endTransmission();
+ 
+  // Le os dados de cada eixo, 2 registradores por eixo
+  Wire.requestFrom(address, 6);
+  if(6<=Wire.available())
+  {
+    x = Wire.read()<<8; //X msb
+    x |= Wire.read(); //X lsb
+    z = Wire.read()<<8; //Z msb
+    z |= Wire.read(); //Z lsb
+    y = Wire.read()<<8; //Y msb
+    y |= Wire.read(); //Y lsb
+  }
+  
+  // Imprime os vaores no serial monitor
+  Serial.print("x: ");
+  Serial.print(x);
+  Serial.print("  y: ");
+  Serial.print(y);
+  Serial.print("  z: ");
+  Serial.println(z);
+  
+  delay(250);
     // delay(1000);
-    // if (count > 1000 )
-    // {
+    if (count > 200 )
+    {
     //     if (firstReading)
     //     {
     //         //valueRefer = teste;
@@ -201,12 +130,12 @@ void loop() {
     //         medTeste += teste[i];
     //     }
     //     medTeste = medTeste / 3;
-    //     moveAllpidGyro(50, &motorLeft, &motorRight, &soma, error, medTeste, &powerRightL, valueRefer, &tPrint);
+        moveAllpidGyro(50, &motorLeft, &motorRight, &soma, error, x, &powerRightL, valueRefer, &tPrint);
 
-    // }else
-    // {
-    //     count += 1;
-    // }
+    }else
+    {
+        count += 1;
+    }
 
 }
 
