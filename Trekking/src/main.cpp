@@ -54,6 +54,7 @@ float error [2];
 float giro = 0;
 float mR;
 float mL;
+float pi = 3.14159265;
 unsigned long tsart;
 long powerRightL = 60;
 long teste[6];
@@ -72,7 +73,6 @@ void incR (){
 
 	motorRight.encSignal();
 }
-
 
 void setup() {
     Serial.begin(9600);
@@ -108,34 +108,40 @@ void loop() {
     y = Wire.read()<<8; //Y msb
     y |= Wire.read(); //Y lsb
   }
+
+  double result = atan2(y,x);
+
+  double degree = result *(360/3.141592); 
+    
   
   // Imprime os vaores no serial monitor
-  Serial.print("x: ");
-  Serial.print(x);
-  Serial.print("  y: ");
-  Serial.print(y);
-  Serial.print("  z: ");
-  Serial.println(z);
+  Serial.print("Degree: ");
+  Serial.print(degree);
+  // Serial.print("  result: ");
+  // Serial.println(result);
+  // Serial.print("  z: ");
+  // Serial.println(z);
   
+
   delay(250);
     // delay(1000);
-    if (count > 200 )
-    {
-    //     if (firstReading)
-    //     {
-    //         //valueRefer = teste;
-    //         firstReading = false;
-    //     }
-    //     for (size_t i = 0; i < 3; ++i) {
-    //         medTeste += teste[i];
-    //     }
-    //     medTeste = medTeste / 3;
-        moveAllpidGyro(50, &motorLeft, &motorRight, &soma, error, x, &powerRightL, valueRefer, &tPrint);
+    // if (count > 200 )
+    // {
+    // //     if (firstReading)
+    // //     {
+    // //         //valueRefer = teste;
+    // //         firstReading = false;
+    // //     }
+    // //     for (size_t i = 0; i < 3; ++i) {
+    // //         medTeste += teste[i];
+    // //     }
+    // //     medTeste = medTeste / 3;
+    //     // moveAllpidGyro(50, &motorLeft, &motorRight, &soma, error, x, &powerRightL, valueRefer, &tPrint);
 
-    }else
-    {
-        count += 1;
-    }
+    // }else
+    // {
+    //     count += 1;
+    // }
 
 }
 
