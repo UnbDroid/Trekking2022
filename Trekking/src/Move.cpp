@@ -2,8 +2,8 @@
 #include <Move.h>
 #include <math.h>
 
-#define kp 0.05
-#define ki 0.0075
+#define kp 0.1
+#define ki 0.75
 
 
 /*Encoder
@@ -19,6 +19,7 @@ float time1 = millis();
 void moveAll(int _power, MotorDC *motorLeft, MotorDC *motorRight) {
   motorLeft->fwd(_power);
   motorRight->fwd(_power);
+  Serial.print("MOVIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
   // motorRight->fwd(_power-35);
 }
 
@@ -207,7 +208,7 @@ void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight) {
 
 
 
-void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL, int valueRef, unsigned long *tPrint) {
+void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL, long valueRef) {
   float powerLeft;
   float powerRight;
 
@@ -225,6 +226,29 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   
   error[0] = (gyroValue - valueRef);// - giro; // diferença entre os encoderes sendo o error atual
   error[1] = millis();
+
+  if(error[0] > -3 && error[0] < 3) {
+    error[0] = 0;
+  }
+
+  if (error[0]<=-180)
+  {
+    error[0]+=360;
+  }
+  if (error[0]>=180)
+  {
+    error[0]-=360;
+  }
+
+
+  Serial.print(" gyroValue : ");
+  Serial.print(gyroValue);
+  Serial.print(" valueRef : ");
+  Serial.print(valueRef);
+  Serial.print(" error[0] : ");
+  Serial.println(error[0]);
+  
+  // Serial.print(" error[0] ********* : ");
   // Serial.println(error[0]);
 
   deltaT = (error[1] - lastT)/1000;
@@ -238,53 +262,63 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
     *soma = -10/ki;
   }
 
+  
+
   powerLeft = abs(_power);
-  powerRight = abs((*powerRightL)) + (error[0]*kp);// + (*soma)*ki;
+  powerRight = abs((*powerRightL)) - (error[0]*kp); //+ (*soma)*ki;
+  Serial.print(" powerRight : ");
+  Serial.println(powerRight);
 
-  if(millis() - *tPrint > 100) {
-      *tPrint = millis();
-      if(error[0] > 0){
-        Serial.println("LEFT");
-      } else {
-        Serial.println("RIGHT");
-      }
+  // if(millis() - *tPrint > 100) {
+  //     *tPrint = millis();
+  //     if(error[0] > 0){
+  //       Serial.println("LEFT");
+  //     } else {
+  //       Serial.println("RIGHT");
+  //     }
 
-      // Serial.println();
-      // Serial.println("LEFT");
-      // Serial.println(powerLeft);
-      // Serial.println("right");
-      // Serial.println(powerRight);
-      }
+  //     // Serial.println();
+  //     // Serial.println("LEFT");
+  //     // Serial.println(powerLeft);
+  //     // Serial.println("right");
+  //     // Serial.println(powerRight);
+  //     }
 
   powerLeft = (powerLeft > 255) ? 255 : powerLeft;
   powerRight = (powerRight > 255) ? 255 : powerRight;
   powerLeft = (powerLeft < 0) ? 0 : powerLeft;
   powerRight = (powerRight < 0) ? 0 : powerRight;
 
+  // Serial.print(" powerLeft : ");
+  // Serial.print(powerLeft);
+  // Serial.print(" powerRight : ");
+  // Serial.println(powerRight);
+
   motorLeft->fwd(powerLeft);
   motorRight->fwd(powerRight);
-  *powerRightL = powerRight;
+  *powerRightL = (powerRight < powerLeft *0.4) ? *powerRightL : powerRight;
+  // *powerRightL = powerRight;
 
   //Quando a potência era negativa, adotamos que o robô andaria para trás
-  if(_power < 0){
+  // if(_power < 0){
 
-    if((error[1] - time1) > 3500){
-      motorLeft->rev(powerLeft);
-      motorRight->rev(powerRight);
-    } else {
-      motorLeft->rev(50);
-      motorRight->rev(50);
-    }
+  //   if((error[1] - time1) > 3500){
+  //     motorLeft->rev(powerLeft);
+  //     motorRight->rev(powerRight);
+  //   } else {
+  //     motorLeft->rev(50);
+  //     motorRight->rev(50);
+  //   }
 
-  }else{
-    if((error[1] - time1) > 3500){
-      motorLeft->fwd(powerLeft);
-      motorRight->fwd(powerRight);
-    } else {
-      motorLeft->fwd(50);
-      motorRight->fwd(50);
-    }
-  }
+  // }else{
+  //   if((error[1] - time1) > 3500){
+  //     motorLeft->fwd(powerLeft);
+  //     motorRight->fwd(powerRight);
+  //   } else {
+  //     motorLeft->fwd(50);
+  //     motorRight->fwd(50);
+  //   }
+  // }
 }
 
 

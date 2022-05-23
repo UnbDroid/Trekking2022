@@ -74,7 +74,7 @@ void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRigh
 
 void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight);
 
-void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long* powerRightL, int valueRef, unsigned long *tPrint);
+void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long* powerRightL, long valueRef);
 
 
 #endif

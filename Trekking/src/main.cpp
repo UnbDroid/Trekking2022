@@ -7,16 +7,19 @@
 #include <Wire.h>
 
 // Motor Direita
-#define pin1A 5
-#define pin1B 6
-#define pin1pwm 7
+#define pin1A 3
+#define pin1B 7
+#define pin1pwm 8
 #define pin1Enc A0
 
 // Motor Esquerda
-#define pin2A 8
-#define pin2B 9
-#define pin2pwm 10
+#define pin2A 6
+#define pin2B 2
+#define pin2pwm 9
 #define pin2Enc A1
+
+#define pinEnable1 14
+#define pinEnable2 15
 
 //Ultrassom Frente
 #define pinFrontTrigger 52
@@ -44,10 +47,14 @@
 
 int firstReading = true;
 int count = 0;
-int valueRefer;
+int valueRef;
 
-MotorDC motorRight (5, 7, 8, 18); 
-MotorDC motorLeft (6, 4, 9, 2);
+MotorDC motorRight (5, 7, 8, 18, 14); 
+MotorDC motorLeft (6, 4, 9, 3, 15);
+
+
+// MotorDC motorRight (3, 7, 8, 18, 14); 
+// MotorDC motorLeft (6, 2, 9, 4, 15);
 
 float soma = 0;
 float error [2];
@@ -56,7 +63,7 @@ float mR;
 float mL;
 float pi = 3.14159265;
 unsigned long tsart;
-long powerRightL = 60;
+long powerRightL = 70;
 long teste[6];
 int testIndex = 0;
 long medTeste;
@@ -85,7 +92,12 @@ void setup() {
     // Modo de medicao continuo
     Wire.write(0x00); 
     Wire.endTransmission();
-  
+    
+    attachInterrupt(digitalPinToInterrupt(2), inc, RISING);//VERIFICAR 
+    attachInterrupt(digitalPinToInterrupt(18), incR, RISING);
+    error[0] = 0;
+    error[1] = millis();
+
     delay(2000);
     tPrint = millis();
 }
@@ -111,32 +123,35 @@ void loop() {
 
   double result = atan2(y,x);
 
-  double degree = result *(360/3.141592); 
+  double degree = result *(180/3.141592); 
     
   
   // Imprime os vaores no serial monitor
-  Serial.print("Degree: ");
-  Serial.print(degree);
-  // Serial.print("  result: ");
-  // Serial.println(result);
-  // Serial.print("  z: ");
-  // Serial.println(z);
-  
+  // Serial.print("Degree: ");
+  // Serial.println(degree);
+  // Serial.print("  x: ");
+  // Serial.print(x);
+  // Serial.print("  y: ");
+  // Serial.println(y);
 
-  delay(250);
     // delay(1000);
     // if (count > 200 )
     // {
-    // //     if (firstReading)
-    // //     {
-    // //         //valueRefer = teste;
-    // //         firstReading = false;
-    // //     }
+        if (firstReading)
+        {
+            valueRef = degree;
+            firstReading = false;
+            delay(3000);
+        }
     // //     for (size_t i = 0; i < 3; ++i) {
     // //         medTeste += teste[i];
     // //     }
     // //     medTeste = medTeste / 3;
-    //     // moveAllpidGyro(50, &motorLeft, &motorRight, &soma, error, x, &powerRightL, valueRefer, &tPrint);
+    // moveAll(80, &motorLeft, &motorRight);
+      moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, degree, &powerRightL, valueRef);
+
+    // moveAllpidGyro(50, &motorLeft, &motorRight, &soma, error, degree, &powerRightL, degree, &tPrint);
+    // delay(250);
 
     // }else
     // {
