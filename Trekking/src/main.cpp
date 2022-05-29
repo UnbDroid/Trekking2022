@@ -40,7 +40,6 @@
 #define pinColorLeftS3 47
 #define pinColorLeftOut 43
 
-#define address 0x1E 
 #define EIXO_X 0
 #define EIXO_Y 1
 #define EIXO_Z 2
@@ -50,11 +49,13 @@ int count = 0;
 int valueRef;
 
 MotorDC motorRight (5, 7, 8, 18, 14); 
-MotorDC motorLeft (6, 4, 9, 3, 15);
+MotorDC motorLeft (6, 4, 9, 2, 15);
 
 
 // MotorDC motorRight (3, 7, 8, 18, 14); 
 // MotorDC motorLeft (6, 2, 9, 4, 15);
+
+Gyro *giroscopio = new Gyro();
 
 float soma = 0;
 float error [2];
@@ -105,58 +106,49 @@ void setup() {
 void loop() {
 
   // Indica ao HMC5883 para iniciar a leitura
-  Wire.beginTransmission(address);
-  Wire.write(0x03); //select register 3, X MSB register
-  Wire.endTransmission();
+  // Wire.beginTransmission(address);
+  // Wire.write(0x03); //select register 3, X MSB register
+  // Wire.endTransmission();
  
-  // Le os dados de cada eixo, 2 registradores por eixo
-  Wire.requestFrom(address, 6);
-  if(6<=Wire.available())
-  {
-    x = Wire.read()<<8; //X msb
-    x |= Wire.read(); //X lsb
-    z = Wire.read()<<8; //Z msb
-    z |= Wire.read(); //Z lsb
-    y = Wire.read()<<8; //Y msb
-    y |= Wire.read(); //Y lsb
-  }
+  // // Le os dados de cada eixo, 2 registradores por eixo
+  // Wire.requestFrom(address, 6);
+  // if(6<=Wire.available())
+  // {
+  //   x = Wire.read()<<8; //X msb
+  //   x |= Wire.read(); //X lsb
+  //   z = Wire.read()<<8; //Z msb
+  //   z |= Wire.read(); //Z lsb
+  //   y = Wire.read()<<8; //Y msb
+  //   y |= Wire.read(); //Y lsb
+  // }
 
-  double result = atan2(y,x);
+  // double result = atan2(y,x);
 
-  double degree = result *(180/3.141592); 
+  // double gyroValue = result *(180/3.141592); 
     
+    double gyroValue = giroscopio->requestData();
   
-  // Imprime os vaores no serial monitor
-  // Serial.print("Degree: ");
-  // Serial.println(degree);
+  // TESTE GIROSCOPIO
+  Serial.print("gyroValue: ");
+  Serial.println(gyroValue);
+  // Serial.println(giroscopio->requestData());
   // Serial.print("  x: ");
   // Serial.print(x);
   // Serial.print("  y: ");
   // Serial.println(y);
 
-    // delay(1000);
-    // if (count > 200 )
-    // {
-        if (firstReading)
-        {
-            valueRef = degree;
-            firstReading = false;
-            delay(3000);
-        }
-    // //     for (size_t i = 0; i < 3; ++i) {
-    // //         medTeste += teste[i];
-    // //     }
-    // //     medTeste = medTeste / 3;
-    // moveAll(80, &motorLeft, &motorRight);
-      moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, degree, &powerRightL, valueRef);
+  if (firstReading)
+  {
+      valueRef = gyroValue;
+      firstReading = false;
+      delay(3000);
+  }
+ // moveAll(80, &motorLeft, &motorRight);
+    // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, gyroValue, &powerRightL, valueRef);
+    FowardCm(80, 500, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+    delay(500);
+    turnDegrees(80, 90, ANTIHORARIO, &motorLeft, &motorRight);
 
-    // moveAllpidGyro(50, &motorLeft, &motorRight, &soma, error, degree, &powerRightL, degree, &tPrint);
-    // delay(250);
-
-    // }else
-    // {
-    //     count += 1;
-    // }
-
+  delay(4000);
 }
 

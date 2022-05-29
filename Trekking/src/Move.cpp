@@ -19,7 +19,6 @@ float time1 = millis();
 void moveAll(int _power, MotorDC *motorLeft, MotorDC *motorRight) {
   motorLeft->fwd(_power);
   motorRight->fwd(_power);
-  Serial.print("MOVIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
   // motorRight->fwd(_power-35);
 }
 
@@ -165,7 +164,7 @@ void turnDegrees(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorD
 }
 
 //Andar para frente uma certa distância.
-void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, long gyroValue,long *powerRightL) {
+void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, Gyro *giroscopio,long *powerRightL, int valueRef) {
   // ------------------------------------------------------------------------------------------------
   // A funcao moveAllpidGyro nao funciona quando chama aqui dentro, ai pra testar a gente
   // mudou na moveAll para o direito andar com _power-30
@@ -178,14 +177,20 @@ void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRigh
   long c = DIAMETER*PI;
   long move = (_distance*GIRO)/c;
 
-  moveAll(_power, motorLeft, motorRight);
-  // moveAllpidGyro(_power, motorLeft, motorRight, soma, error, gyroValue, powerRightL);
+  // moveAll(_power, motorLeft, motorRight);
+  moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio->requestData(), powerRightL, valueRef);
 
 //Enquanto distância entre o enconder atual e o inicial não for o desejado (MOVE) ele vai continuar andando pra frente.
   while((countLeftUpdate - countLeftInitial) < move ) {
-    moveAll(_power, motorLeft, motorRight);
-    // moveAllpidGyro(_power, motorLeft, motorRight, soma, error, gyroValue, powerRightL);
+    // moveAll(_power, motorLeft, motorRight);
+    moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio->requestData(), powerRightL, valueRef);
     countLeftUpdate = motorLeft->getCount();
+    Serial.print("countLeftUpdate: ");
+    Serial.println(countLeftUpdate);
+    Serial.print("countLeftInitial: ");
+    Serial.println(countLeftInitial);
+    Serial.print("move: ");
+    Serial.println(move);
   }
   stopAll(motorLeft, motorRight);
 }
@@ -212,25 +217,19 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   float powerLeft;
   float powerRight;
 
-
   float lastT = error[1];
   float lastE = error[0];
   float deltaT;
-
-
-  // float valueRef = 0;
-  // if(gyroValue <= 125 && gyroValue >= 80)
-  // {
-  //   gyroValue = 0;
-  // }
   
-  error[0] = (gyroValue - valueRef);// - giro; // diferença entre os encoderes sendo o error atual
+  error[0] = (gyroValue - valueRef); // diferença entre os encoderes sendo o error atual
   error[1] = millis();
 
+  // Caso esteja proximo de 0
   if(error[0] > -3 && error[0] < 3) {
     error[0] = 0;
   }
 
+  // Caso esteja no angulo que passa de +180 para -180
   if (error[0]<=-180)
   {
     error[0]+=360;
@@ -240,17 +239,14 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
     error[0]-=360;
   }
 
-
-  Serial.print(" gyroValue : ");
-  Serial.print(gyroValue);
-  Serial.print(" valueRef : ");
-  Serial.print(valueRef);
-  Serial.print(" error[0] : ");
-  Serial.println(error[0]);
-  
-  // Serial.print(" error[0] ********* : ");
+  // TESTE
+  // Serial.print(" gyroValue : ");
+  // Serial.print(gyroValue);
+  // Serial.print(" valueRef : ");
+  // Serial.print(valueRef);
+  // Serial.print(" error[0] : ");
   // Serial.println(error[0]);
-
+  
   deltaT = (error[1] - lastT)/1000;
 
   *soma = (*soma)*0.6 + error[0]*deltaT;
@@ -262,33 +258,17 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
     *soma = -10/ki;
   }
 
-  
-
   powerLeft = abs(_power);
   powerRight = abs((*powerRightL)) - (error[0]*kp); //+ (*soma)*ki;
   Serial.print(" powerRight : ");
   Serial.println(powerRight);
-
-  // if(millis() - *tPrint > 100) {
-  //     *tPrint = millis();
-  //     if(error[0] > 0){
-  //       Serial.println("LEFT");
-  //     } else {
-  //       Serial.println("RIGHT");
-  //     }
-
-  //     // Serial.println();
-  //     // Serial.println("LEFT");
-  //     // Serial.println(powerLeft);
-  //     // Serial.println("right");
-  //     // Serial.println(powerRight);
-  //     }
 
   powerLeft = (powerLeft > 255) ? 255 : powerLeft;
   powerRight = (powerRight > 255) ? 255 : powerRight;
   powerLeft = (powerLeft < 0) ? 0 : powerLeft;
   powerRight = (powerRight < 0) ? 0 : powerRight;
 
+  // TESTE
   // Serial.print(" powerLeft : ");
   // Serial.print(powerLeft);
   // Serial.print(" powerRight : ");

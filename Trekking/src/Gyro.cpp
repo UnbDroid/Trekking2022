@@ -12,27 +12,37 @@ Gyro::Gyro(){
 Gyro::~Gyro(){}
  
 
-long Gyro::requestData(int valorEixo){
-  Wire.beginTransmission(MPU);      //transmite
-  Wire.write(0x3B);                 // Endereço 0x3B (ACCEL_XOUT_H)
-  Wire.endTransmission(false);     //Finaliza transmissão
+double Gyro::requestData(){
+    int x, y, z;
+    // Indica ao HMC5883 para iniciar a leitura
+    Wire.beginTransmission(address);
+    Wire.write(0x03); //select register 3, X MSB register
+    Wire.endTransmission();
+
+    // Le os dados de cada eixo, 2 registradores por eixo
+    Wire.requestFrom(address, 6);
+    if(6<=Wire.available())
+    {
+    x = Wire.read()<<8; //X msb
+    x |= Wire.read(); //X lsb
+    z = Wire.read()<<8; //Z msb
+    z |= Wire.read(); //Z lsb
+    y = Wire.read()<<8; //Y msb
+    y |= Wire.read(); //Y lsb
+    }
+
+    double result = atan2(y,x);
+
+    double gyroValue = result *(180/3.141592); 
   
-  Wire.requestFrom(MPU,14,true);
-
-  for(int i = 0; i <= 6; i++){
-      data[i] = Wire.read()<<8|Wire.read();
-      //Serial.println(data[i]);
-  }
-
-    return data[valorEixo];
-
+    return gyroValue;
 }
 
 long Gyro::filter(int count, int eixoValue){
 	int i = 0;
 	long eixo = 0;
 	while (i < count){
-		 eixo =+ this->requestData(eixoValue);
+		//  eixo =+ this->requestData(eixoValue);
 		i++;
 	}
     return (eixo)/count;

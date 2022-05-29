@@ -2,6 +2,7 @@
 #define MOVE_H
 
 #include <MotorDC.h>
+#include <Gyro.h>
 
 #define HORARIO 0
 #define ANTIHORARIO 1
@@ -63,7 +64,7 @@ void turnDegrees(int _power, int _degrees, int _clock, MotorDC *motorLeft, Motor
     - distancia: Distância em centímetros.
 */
 
-void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, long gyroValue,long *powerRightL);
+void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, Gyro *giroscopio,long *powerRightL, int valueRef);
 
 /* Rev Cm
   Descricao: Anda para trás uma certa quantidade de centímetros.
