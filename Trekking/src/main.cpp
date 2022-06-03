@@ -144,7 +144,7 @@ void loop() {
       delay(3000);
   }
  // moveAll(80, &motorLeft, &motorRight);
-    // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, gyroValue, &powerRightL, valueRef);
+    // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
     FowardCm(80, 500, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
     delay(500);
     turnDegrees(80, 90, ANTIHORARIO, &motorLeft, &motorRight);

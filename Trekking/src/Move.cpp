@@ -178,12 +178,12 @@ void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRigh
   long move = (_distance*GIRO)/c;
 
   // moveAll(_power, motorLeft, motorRight);
-  moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio->requestData(), powerRightL, valueRef);
+  moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio, powerRightL, valueRef);
 
 //Enquanto distância entre o enconder atual e o inicial não for o desejado (MOVE) ele vai continuar andando pra frente.
   while((countLeftUpdate - countLeftInitial) < move ) {
     // moveAll(_power, motorLeft, motorRight);
-    moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio->requestData(), powerRightL, valueRef);
+    moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio, powerRightL, valueRef);
     countLeftUpdate = motorLeft->getCount();
     Serial.print("countLeftUpdate: ");
     Serial.println(countLeftUpdate);
@@ -213,7 +213,7 @@ void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight) {
 
 
 
-void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL, long valueRef) {
+void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef) {
   float powerLeft;
   float powerRight;
 
@@ -221,6 +221,8 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   float lastE = error[0];
   float deltaT;
   
+  long gyroValue = giroscopio->requestData();
+
   error[0] = (gyroValue - valueRef); // diferença entre os encoderes sendo o error atual
   error[1] = millis();
 
