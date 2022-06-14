@@ -120,7 +120,7 @@ void turnAnticlockwise(int _power,  MotorDC *motorLeft, MotorDC *motorRight) {
   stopAll(motorLeft,motorRight);
 }
 
-//Função que gira o robô de acordo com o graus.
+//Função que gira o robô de acordo com o graus usando encoders.
 //dir = HORARIO ou ANTIHORARIO
 void turnDegrees(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorDC *motorRight) {
   int c = DIAMETER*3.14;
@@ -163,7 +163,7 @@ void turnDegrees(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorD
   stopAll(motorLeft, motorRight);
 }
 
-//Função que gira o robô de acordo com o graus.
+//Welder Função que gira o robô de acordo com o graus usando giroscopio.
 //dir = HORARIO ou ANTIHORARIO
 void turnDegreesGyro(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorDC *motorRight) {
   int c = DIAMETER*3.14;
@@ -218,6 +218,51 @@ void turnDegreesGyro(int _power, int _degree, int _clock, MotorDC *motorLeft, Mo
     //error
   }
   stopAll(motorLeft, motorRight);
+}
+
+//David e Arthur Função que gira o robô de acordo com o graus usando giroscopio.
+//dir = HORARIO ou ANTIHORARIO
+void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, MotorDC *motorRight, Gyro *giroscopio) {
+  long ang_inicial = giroscopio->requestData();
+  long ang_atual;
+
+  if (_clock == HORARIO) {
+    motorLeft->fwd(_power);
+    motorRight->rev(_power);
+    long ang_final = ang_inicial - _degree;
+    Serial.print("ang_final: ");
+    Serial.println(ang_final);
+    if (ang_inicial < 0 && ang_final < -180){
+      ang_final += 360;
+      while (true) {
+        ang_atual = giroscopio->requestData();
+        if (ang_atual > 0 && ang_atual <= ang_final) {
+          break;
+        }
+        Serial.print("ang_atual2: ");
+        Serial.println(ang_atual);
+      }
+      Serial.println("SAI DO WHILE------------------------------------------------------");
+      stopAll(motorLeft, motorRight);
+    }
+    else {
+      while (true) {
+        ang_atual = giroscopio->requestData();
+        if (ang_inicial - ang_atual >= _degree) {
+          break;
+        }
+        Serial.print("ang_atual: ");
+        Serial.println(ang_atual);
+      }
+      Serial.println("SAI DO WHILE------------------------------------------------------");
+      stopAll(motorLeft, motorRight);
+    }
+  }
+  else if (_clock == ANTIHORARIO) {
+    /* code */
+  }
+  
+  
 }
 
 //Andar para frente uma certa distância.

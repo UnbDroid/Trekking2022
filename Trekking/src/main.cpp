@@ -106,30 +106,10 @@ void setup() {
 }
 
 void loop() {
-
-  // Indica ao HMC5883 para iniciar a leitura
-  // Wire.beginTransmission(address);
-  // Wire.write(0x03); //select register 3, X MSB register
-  // Wire.endTransmission();
- 
-  // // Le os dados de cada eixo, 2 registradores por eixo
-  // Wire.requestFrom(address, 6);
-  // if(6<=Wire.available())
-  // {
-  //   x = Wire.read()<<8; //X msb
-  //   x |= Wire.read(); //X lsb
-  //   z = Wire.read()<<8; //Z msb
-  //   z |= Wire.read(); //Z lsb
-  //   y = Wire.read()<<8; //Y msb
-  //   y |= Wire.read(); //Y lsb
-  // }
-
-  // double result = atan2(y,x);
-
-  // double gyroValue = result *(180/3.141592); 
     
-    double gyroValue = giroscopio->requestData();
+  double gyroValue = giroscopio->requestData();
   
+  // -----------------------------------------------------------------
   // TESTE GIROSCOPIO
   Serial.print("gyroValue: ");
   Serial.println(gyroValue);
@@ -138,48 +118,55 @@ void loop() {
   // Serial.print(x);
   // Serial.print("  y: ");
   // Serial.println(y);
+  // -----------------------------------------------------------------
 
-  if (firstReading)
-  {
-      valueRef = gyroValue;
-      firstReading = false;
+  // if (firstReading)
+  // {
+  //     valueRef = gyroValue;
+  //     firstReading = false;
       
-      ps_final = fabs(valueRef)+90;//ValueRef + a quantidade de Graus desejada 
-      //Na função deverá pegar o sentido de giro HORARIO OU ANTI  
+  //     ps_final = fabs(valueRef)+90;//ValueRef + a quantidade de Graus desejada 
+  //     //Na função deverá pegar o sentido de giro HORARIO OU ANTI  
   
-      if (fabs(ps_final) > 180)
-      {
-        ps_final -= 180;
-        //Adicionar condicionais;
-        ps_final = -180-ps_final;//Se sentido Horario (DIR-0) 
-        ps_final = 180-ps_final;//Se sentido ANTIHorario (ESQ-1) 
+  //     if (fabs(ps_final) > 180)
+  //     {
+  //       ps_final -= 180;
+  //       //Adicionar condicionais;
+  //       ps_final = -180-ps_final;//Se sentido Horario (DIR-0) 
+  //       ps_final = 180-ps_final;//Se sentido ANTIHorario (ESQ-1) 
 
-        Serial.print("Entrei no IF: ");
-        Serial.println(ps_final);
-      }
+  //       Serial.print("Entrei no IF: ");
+  //       Serial.println(ps_final);
+  //     }
 
-      delay(3000);
+  //     delay(3000);
+  // }
+  // //Verificação de Ida
+  // //Se valueRef > 0 e DIR = 0 fazer verificação quando >= 179 graus e retirar a diferença restante calculando em
+  // //cima de -180
+  // //Verificação de Volta
+  // //Se ValueRef > 0 e DIR = 1 fazer verificação quando ficar menor que 0, retirar a diferença e somar valor (NEGATIVO) a 0
+  // //Atentar se valor passar de -180 para positivo
+
+  // while (gyroValue > ps_final and gyroValue < ps_final+10)//Checar se intervalo de 10 angulos é válido
+  // {
+  //   Serial.print("TESTE DE SAIDA");
+  // }
+  
+  // Delay para começar
+  if (firstReading){
+    firstReading = false;
+    delay(6000);
   }
-  //Verificação de Ida
-  //Se valueRef > 0 e DIR = 0 fazer verificação quando >= 179 graus e retirar a diferença restante calculando em
-  //cima de -180
-  //Verificação de Volta
-  //Se ValueRef > 0 e DIR = 1 fazer verificação quando ficar menor que 0, retirar a diferença e somar valor (NEGATIVO) a 0
-  //Atentar se valor passar de -180 para positivo
-
-  while (gyroValue > ps_final and gyroValue < ps_final+10)//Checar se intervalo de 10 angulos é válido
-  {
-    Serial.print("TESTE DE SAIDA");
-  }
-  
 
   
- // moveAll(80, &motorLeft, &motorRight);
-    // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
-    // FowardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
-    // delay(500);
-    // turnDegrees(100, 90, ANTIHORARIO, &motorLeft, &motorRight);
+  // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+  // FowardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+  // delay(500);
+  // turnDegrees(100, 90, ANTIHORARIO, &motorLeft, &motorRight);
 
-  // delay(4000);
+  turnDegreesGyro2(65, 90, HORARIO, &motorLeft, &motorRight, giroscopio);
+
+  delay(10000);
 }
 

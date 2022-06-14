@@ -48,24 +48,34 @@ void turnClockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight);
 void turnAnticlockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight);
 
 /* Turn Degrees
-  Descricao: Gira em uma determinada direção, determinada quantidade de graus.
+  Descricao: Gira em uma determinada direção, determinada quantidade de graus utilizando os encoders.
   Parâmetros:
-    - potencia: Potência desejada.
-    - graus: Quantidade de graus que se deseja girar.
-    - direcao: Direção desejada HORARIO OU ANTIHORARIO
+    - _power: Potência desejada.
+    - _degrees: Quantidade de graus que se deseja girar.
+    - _clock: Direção desejada HORARIO OU ANTIHORARIO
 */
 
 void turnDegrees(int _power, int _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight);
 
-/* Turn Degrees
-  Descricao: Gira em uma determinada direção, determinada quantidade de graus.
+/* turnDegreesGyro
+  Descricao: Welder Gira em uma determinada direção, determinada quantidade de graus utilizando o giroscopio.
   Parâmetros:
-    - potencia: Potência desejada.
-    - graus: Quantidade de graus que se deseja girar.
-    - direcao: Direção desejada HORARIO OU ANTIHORARIO
+    - _power: Potência desejada.
+    - _degrees: Quantidade de graus que se deseja girar.
+    - _clock: Direção desejada HORARIO OU ANTIHORARIO
 */
 
 void turnDegreesGyro(int _power, int _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight);
+
+/* turnDegreesGyro2
+  Descricao: Função que o David e Arthur tava fazendo Gira em uma determinada direção, determinada quantidade de graus utilizando o giroscopio.
+  Parâmetros:
+    - _power: Potência desejada.
+    - _degrees: Quantidade de graus que se deseja girar.
+    - _clock: Direção desejada HORARIO OU ANTIHORARIO
+*/
+
+void turnDegreesGyro2(int _power, long _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight, Gyro *giroscopio);
 
 /* Foward Cm
   Descricao: Anda para frente uma certa quantidade de centímetros.
