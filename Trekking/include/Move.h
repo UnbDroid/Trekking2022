@@ -57,6 +57,16 @@ void turnAnticlockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight);
 
 void turnDegrees(int _power, int _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight);
 
+/* Turn Degrees
+  Descricao: Gira em uma determinada direção, determinada quantidade de graus.
+  Parâmetros:
+    - potencia: Potência desejada.
+    - graus: Quantidade de graus que se deseja girar.
+    - direcao: Direção desejada HORARIO OU ANTIHORARIO
+*/
+
+void turnDegreesGyro(int _power, int _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight);
+
 /* Foward Cm
   Descricao: Anda para frente uma certa quantidade de centímetros.
   Parâmetros:

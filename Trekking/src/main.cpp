@@ -71,6 +71,8 @@ long medTeste;
 unsigned long tPrint;
 int x,y,z;
 
+int ps_final = 0;
+
 void inc (){
 
   motorLeft.encSignal();
@@ -141,14 +143,34 @@ void loop() {
   {
       valueRef = gyroValue;
       firstReading = false;
+      
+      ps_final = fabs(valueRef)+90;
+  
+      if (fabs(ps_final) > 180)
+      {
+        ps_final -= 180;
+        ps_final = -180-ps_final;//Se sentido Horario (DIR-0) 
+        ps_final = 180-ps_final;//Se sentido ANTIHorario (ESQ-1) 
+
+        Serial.print("Entrei no IF: ");
+        Serial.println(ps_final);
+      }
       delay(3000);
   }
+
+  while (gyroValue > ps_final and gyroValue < ps_final+10)
+  {
+    Serial.print("TESTE DE SAIDA");
+  }
+  
+
+  
  // moveAll(80, &motorLeft, &motorRight);
     // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
-    FowardCm(80, 500, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
-    delay(500);
-    turnDegrees(80, 90, ANTIHORARIO, &motorLeft, &motorRight);
+    // FowardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+    // delay(500);
+    // turnDegrees(100, 90, ANTIHORARIO, &motorLeft, &motorRight);
 
-  delay(4000);
+  // delay(4000);
 }
 

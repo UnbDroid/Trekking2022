@@ -163,6 +163,63 @@ void turnDegrees(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorD
   stopAll(motorLeft, motorRight);
 }
 
+//Função que gira o robô de acordo com o graus.
+//dir = HORARIO ou ANTIHORARIO
+void turnDegreesGyro(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorDC *motorRight) {
+  int c = DIAMETER*3.14;
+  // int valueRef = 70; //Positição de referência do Robô, posição inicial
+  // int ps_total = _degree + valueRef;
+
+  // //Perimetro que a roda deve andar para chegar na quantidade de graus desejada
+  int move = (GIRO*(WDIST*3.14*2)*((float) _degree/360))/c;
+  // if (fabs(ps_total) > 180)
+  // {
+  //   ps_total -=180;
+  //   ps_total = 180-ps_total;
+  // }
+  
+  // int move = -180-(ps_total); //PARA DIREITA
+  // int move = 180-(ps_total); //PARA ESQUERDA
+
+
+  //(Grau_Atual - Grau_Desejado)
+
+  //Variáveis que armazenam as contagens dos encoderes
+  int countLeftInitial = motorLeft->getCount();
+  int countLeftUpdate = motorLeft->getCount();
+  int countRightInitial = motorRight->getCount();
+  int countRightUpdate = motorRight->getCount();
+
+  //Girar sentido horário
+  if (_clock == HORARIO) {
+    motorLeft->fwd(_power);
+    motorRight->rev(_power);
+    //Enquanto distância entre o enconder atual e o inicial não for o desejado (MOVE) ele vai continuar girando.
+    while((countLeftUpdate - countLeftInitial) < move ) {
+      countLeftUpdate = motorLeft->getCount();
+      Serial.println("Counter L deg");
+      Serial.println(countLeftUpdate);
+    }
+    //Quando a distância do enconder atual e o inicial for igual o desejado (MOVE), o robô tem que parar de girar.
+    stopAll(motorLeft, motorRight);
+  }
+
+  else if (_clock == ANTIHORARIO) {
+    motorRight->fwd(_power);
+    motorLeft->rev(_power);
+    while((countRightUpdate - countRightInitial) < move) {
+      countRightUpdate = motorRight->getCount();
+      Serial.println("Counter R");
+      Serial.println(countRightUpdate);
+    }
+    stopAll(motorLeft, motorRight);
+  }
+  else {
+    //error
+  }
+  stopAll(motorLeft, motorRight);
+}
+
 //Andar para frente uma certa distância.
 void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, Gyro *giroscopio,long *powerRightL, int valueRef) {
   // ------------------------------------------------------------------------------------------------
