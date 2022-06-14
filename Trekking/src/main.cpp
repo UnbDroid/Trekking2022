@@ -71,7 +71,7 @@ long medTeste;
 unsigned long tPrint;
 int x,y,z;
 
-int ps_final = 0;
+int ps_final;
 
 void inc (){
 
@@ -144,21 +144,30 @@ void loop() {
       valueRef = gyroValue;
       firstReading = false;
       
-      ps_final = fabs(valueRef)+90;
+      ps_final = fabs(valueRef)+90;//ValueRef + a quantidade de Graus desejada 
+      //Na função deverá pegar o sentido de giro HORARIO OU ANTI  
   
       if (fabs(ps_final) > 180)
       {
         ps_final -= 180;
+        //Adicionar condicionais;
         ps_final = -180-ps_final;//Se sentido Horario (DIR-0) 
         ps_final = 180-ps_final;//Se sentido ANTIHorario (ESQ-1) 
 
         Serial.print("Entrei no IF: ");
         Serial.println(ps_final);
       }
+
       delay(3000);
   }
+  //Verificação de Ida
+  //Se valueRef > 0 e DIR = 0 fazer verificação quando >= 179 graus e retirar a diferença restante calculando em
+  //cima de -180
+  //Verificação de Volta
+  //Se ValueRef > 0 e DIR = 1 fazer verificação quando ficar menor que 0, retirar a diferença e somar valor (NEGATIVO) a 0
+  //Atentar se valor passar de -180 para positivo
 
-  while (gyroValue > ps_final and gyroValue < ps_final+10)
+  while (gyroValue > ps_final and gyroValue < ps_final+10)//Checar se intervalo de 10 angulos é válido
   {
     Serial.print("TESTE DE SAIDA");
   }
