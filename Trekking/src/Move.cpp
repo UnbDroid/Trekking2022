@@ -235,6 +235,7 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
     if (ang_inicial < 0 && ang_final < -180){
       ang_final += 360;
       while (true) {
+        Serial.print("eu entrei aqui nesse caso ");
         ang_atual = giroscopio->requestData();
         if (ang_atual > 0 && ang_atual <= ang_final) {
           break;
@@ -247,6 +248,7 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
     }
     else {
       while (true) {
+        Serial.print("TO NO SEGUNDOOOOOOOOOOOO");
         ang_atual = giroscopio->requestData();
         if (ang_inicial - ang_atual >= _degree) {
           break;
@@ -260,6 +262,27 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
   }
   else if (_clock == ANTIHORARIO) {
     /* code */
+    Serial.print("ESTOU NO ANTIHORARIO");
+    motorLeft->rev(_power);
+    motorRight->fwd(_power);
+    
+    long ang_final = _degree -ang_inicial;
+    if(ang_inicial>=0&& ang_final<=180){
+      while (true)
+      {
+        Serial.print("ang_atual: ");
+        Serial.println(ang_atual);
+        ang_atual = giroscopio->requestData();
+        if(ang_atual-ang_inicial>= _degree)
+        break;
+      }
+      Serial.print("ang_atual: ");
+      Serial.println(ang_atual);
+      
+      Serial.println(ang_atual);
+      stopAll(motorLeft, motorRight);
+
+    }
   }
   
   

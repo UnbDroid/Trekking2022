@@ -164,8 +164,8 @@ void loop() {
   // FowardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
   // delay(500);
   // turnDegrees(100, 90, ANTIHORARIO, &motorLeft, &motorRight);
-
-  turnDegreesGyro2(65, 90, HORARIO, &motorLeft, &motorRight, giroscopio);
+  
+  turnDegreesGyro2(65,80, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
 
   delay(10000);
 }
