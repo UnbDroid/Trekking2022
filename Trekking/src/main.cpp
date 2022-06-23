@@ -165,7 +165,7 @@ void loop() {
   // delay(500);
   // turnDegrees(100, 90, ANTIHORARIO, &motorLeft, &motorRight);
   
-  turnDegreesGyro2(65,80, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
+  turnDegreesGyro2(65,90, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
 
   delay(10000);
 }
