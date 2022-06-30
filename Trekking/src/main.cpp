@@ -160,13 +160,24 @@ void loop() {
   }
 
   
-  // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+  // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, 80);
+  turnDegreesGyro2(75,150, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
+  valueRef = giroscopio->requestData();
+  while (true){
+    moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+  }
   // FowardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
   // delay(500);
   // turnDegrees(100, 90, ANTIHORARIO, &motorLeft, &motorRight);
-  
-  turnDegreesGyro2(65,90, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
+  // TIRAR O DELAY SE FOR TESTAR O CONTROLE PID
+  // delay(10000);
 
-  delay(10000);
+  // Teste giroscopio
+  // while (true)
+  // {
+  //   Serial.print(giroscopio->requestData());
+  //   Serial.print(" ");
+  //   Serial.println(giroscopio->requestData()*180/PI);
+  // }
 }
 
