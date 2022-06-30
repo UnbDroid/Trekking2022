@@ -227,8 +227,8 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
   long ang_inicial = giroscopio->requestData();
   long ang_atual;
 
-  Serial.print("ang_inicial: ");
-  Serial.println(ang_inicial);
+  // Serial.print("ang_inicial: ");
+  // Serial.println(ang_inicial);
 
   if (_clock == HORARIO) {
     motorLeft->fwd(_power);
@@ -259,13 +259,20 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
 
     long ang_final = ang_inicial + _degree;
 
+    // Serial.print("ang_final antes: ");
+    // Serial.println(ang_final);
+
     // Se estiver com um ângulo positivo e for para um ângulo final negativo(passa pelo +- 180º)
     if (ang_inicial > 0 && ang_final > 180){
       ang_final -= 360; //transforma o angulo final em negativo
       flag = true;
     }
+    // Serial.print("ang_final depois: ");
+    // Serial.println(ang_final);
     while (true) {
       ang_atual = giroscopio->requestData();
+      // Serial.print("ang_atual: ");
+      // Serial.println(ang_atual);
       // Se estiver com um ângulo positivo e for para um ângulo final negativo(passa pelo +- 180º)
       if (flag && ang_atual < 0 && ang_atual >= ang_final){
         break;
@@ -277,8 +284,8 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
     stopAll(motorLeft, motorRight);
   }
 
-  Serial.print("ang_final: ");
-  Serial.println(ang_atual);
+  // Serial.print("ang_final: ");
+  // Serial.println(ang_atual);
 }
 
 //Andar para frente uma certa distância.
