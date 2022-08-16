@@ -2,6 +2,7 @@
 #define GYRO_H
 #include <Wire.h>
 #include <Arduino.h>
+#define address 0x1E 
 
 
 class Gyro
@@ -12,7 +13,7 @@ class Gyro
 
     ~Gyro();
 
-    long requestData(int valorEixo);
+    double requestData();
 
     long filter(int count, int eixoValue);
 

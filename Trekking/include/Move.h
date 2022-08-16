@@ -2,6 +2,7 @@
 #define MOVE_H
 
 #include <MotorDC.h>
+#include <Gyro.h>
 
 #define HORARIO 0
 #define ANTIHORARIO 1
@@ -47,14 +48,34 @@ void turnClockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight);
 void turnAnticlockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight);
 
 /* Turn Degrees
-  Descricao: Gira em uma determinada direção, determinada quantidade de graus.
+  Descricao: Gira em uma determinada direção, determinada quantidade de graus utilizando os encoders.
   Parâmetros:
-    - potencia: Potência desejada.
-    - graus: Quantidade de graus que se deseja girar.
-    - direcao: Direção desejada HORARIO OU ANTIHORARIO
+    - _power: Potência desejada.
+    - _degrees: Quantidade de graus que se deseja girar.
+    - _clock: Direção desejada HORARIO OU ANTIHORARIO
 */
 
 void turnDegrees(int _power, int _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight);
+
+/* turnDegreesGyro
+  Descricao: Welder Gira em uma determinada direção, determinada quantidade de graus utilizando o giroscopio.
+  Parâmetros:
+    - _power: Potência desejada.
+    - _degrees: Quantidade de graus que se deseja girar.
+    - _clock: Direção desejada HORARIO OU ANTIHORARIO
+*/
+
+void turnDegreesGyro(int _power, int _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight);
+
+/* turnDegreesGyro2
+  Descricao: Função que o David e Arthur tava fazendo Gira em uma determinada direção, determinada quantidade de graus utilizando o giroscopio.
+  Parâmetros:
+    - _power: Potência desejada.
+    - _degrees: Quantidade de graus que se deseja girar.
+    - _clock: Direção desejada HORARIO OU ANTIHORARIO
+*/
+
+void turnDegreesGyro2(int _power, long _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight, Gyro *giroscopio);
 
 /* Foward Cm
   Descricao: Anda para frente uma certa quantidade de centímetros.
@@ -63,7 +84,7 @@ void turnDegrees(int _power, int _degrees, int _clock, MotorDC *motorLeft, Motor
     - distancia: Distância em centímetros.
 */
 
-void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, long gyroValue,long *powerRightL);
+void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, Gyro *giroscopio,long *powerRightL, int valueRef);
 
 /* Rev Cm
   Descricao: Anda para trás uma certa quantidade de centímetros.
@@ -74,7 +95,7 @@ void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRigh
 
 void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight);
 
-void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long* powerRightL, int valueRef, unsigned long *tPrint);
+void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long* powerRightL, long valueRef);
 
 
 #endif

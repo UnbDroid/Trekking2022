@@ -2,7 +2,7 @@
 #include <MotorDC.h>
 
 //Função do Construtor.
-MotorDC::MotorDC(int pinA, int pinB, int pinPwm, int pinEnc){
+MotorDC::MotorDC(int pinA, int pinB, int pinPwm, int pinEnc, int pinEnable){
 
     //Setando os atributos da classe com os valores passado pela função.
     this->pinA = pinA;
@@ -19,6 +19,10 @@ MotorDC::MotorDC(int pinA, int pinB, int pinPwm, int pinEnc){
     pinMode(pinB, OUTPUT);
     pinMode(pinPwm, OUTPUT);
     pinMode(pinEnc, INPUT);
+    pinMode(pinEnable, OUTPUT);
+
+
+    digitalWrite(pinEnable, HIGH);
     
 }
 

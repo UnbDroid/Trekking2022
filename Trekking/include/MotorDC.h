@@ -13,7 +13,7 @@ class MotorDC
         - pinPwn: Pino analógico de potência mandada para o motor (0 a 255).
         - pinEnc: Pino digital interrupt de sinal do encoder.
     */
-    MotorDC(int pinA, int pinB, int pinPwn, int pinEnc);
+    MotorDC(int pinA, int pinB, int pinPwn, int pinEnc, int pinEnable);
 
 
     //Destrutor da Classe MotorDC
