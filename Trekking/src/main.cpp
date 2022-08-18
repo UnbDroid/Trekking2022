@@ -5,6 +5,8 @@
 #include <Move.h>
 #include <Gyro.h>
 #include <Wire.h>
+#include <ColorSensor.h>
+#include <string.h>
 
 // Motor Direita
 #define pin1A 3
@@ -33,12 +35,12 @@
 #define pinRightTrigger 48
 #define pinRightEcho 49
 
-// Sensor de cor esquerda
-#define pinColorLeftS0 44
-#define pinColorLeftS1 45
-#define pinColorLeftS2 46
-#define pinColorLeftS3 47
-#define pinColorLeftOut 43
+// Sensor de cor
+#define pinColorS0 4 // A DEFINIR
+#define pinColorS1 5 // A DEFINIR
+#define pinColorS2 6 // A DEFINIR
+#define pinColorS3 7 // A DEFINIR
+#define pinColorOut 8 // A DEFINIR
 
 #define EIXO_X 0
 #define EIXO_Y 1
@@ -56,6 +58,8 @@ MotorDC motorLeft (6, 4, 9, 2, 15);
 // MotorDC motorLeft (6, 2, 9, 4, 15);
 
 Gyro *giroscopio = new Gyro();
+
+ColorSensor *colorSensor = new ColorSensor(pinColorS0, pinColorS1, pinColorS2, pinColorS3, pinColorOut);
 
 float soma = 0;
 float error [2];
@@ -119,6 +123,14 @@ void loop() {
   // Serial.print("  y: ");
   // Serial.println(y);
   // -----------------------------------------------------------------
+
+  // -----------------------------------------------------------------
+  // TESTE SENSOR DE COR
+  // colorSensor->readColor();
+  // Serial.println(colorSensor->currentColor);
+  // delay(1000);
+  // -----------------------------------------------------------------
+
 
   // if (firstReading)
   // {
