@@ -53,10 +53,6 @@ int valueRef;
 MotorDC motorRight (5, 7, 8, 18, 14); 
 MotorDC motorLeft (6, 4, 9, 2, 15);
 
-
-// MotorDC motorRight (3, 7, 8, 18, 14); 
-// MotorDC motorLeft (6, 2, 9, 4, 15);
-
 Gyro *giroscopio = new Gyro();
 
 ColorSensor *colorSensor = new ColorSensor(pinColorS0, pinColorS1, pinColorS2, pinColorS3, pinColorOut);
@@ -78,13 +74,11 @@ int x,y,z;
 int ps_final;
 
 void inc (){
-
   motorLeft.encSignal();
   
 }
 
 void incR (){
-
 	motorRight.encSignal();
 }
 
@@ -109,10 +103,11 @@ void setup() {
     tPrint = millis();
 }
 
-void loop() {
-    
+
+
+
+void gyroTest() {
   double gyroValue = giroscopio->requestData();
-  
   // -----------------------------------------------------------------
   // TESTE GIROSCOPIO
   Serial.print("gyroValue: ");
@@ -123,6 +118,7 @@ void loop() {
   // Serial.print("  y: ");
   // Serial.println(y);
   // -----------------------------------------------------------------
+}
 
   // -----------------------------------------------------------------
   // TESTE SENSOR DE COR
@@ -166,30 +162,28 @@ void loop() {
   // }
   
   // Delay para começar
-  if (firstReading){
-    firstReading = false;
-    delay(6000);
-  }
+  // if (firstReading){
+  //   firstReading = false;
+  //   delay(6000);
+  // }
 
   
   // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, 80);
-  turnDegreesGyro2(75,150, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
-  valueRef = giroscopio->requestData();
-  while (true){
-    moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
-  }
+  // turnDegreesGyro2(75,150, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
+  // valueRef = giroscopio->requestData();
+  // // while (true){
+  //   moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+  // }
   // FowardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
   // delay(500);
   // turnDegrees(100, 90, ANTIHORARIO, &motorLeft, &motorRight);
   // TIRAR O DELAY SE FOR TESTAR O CONTROLE PID
   // delay(10000);
 
-  // Teste giroscopio
-  // while (true)
-  // {
-  //   Serial.print(giroscopio->requestData());
-  //   Serial.print(" ");
-  //   Serial.println(giroscopio->requestData()*180/PI);
-  // }
 }
 
+void loop() {
+    moveAll(120, &motorLeft, &motorRight);
+    // gyroTest();
+    // commentedTest();
+}
