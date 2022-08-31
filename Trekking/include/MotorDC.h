@@ -62,6 +62,7 @@ class MotorDC
     int pinPwm;
     int pinEnc;
     int dir;
+    int maxPot = 120;
     long unsigned int encCount;
 
 
