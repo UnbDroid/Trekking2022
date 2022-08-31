@@ -101,6 +101,41 @@ void stopAll(MotorDC *motorLeft, MotorDC *motorRight) {
   motorLeft->stop();
 }
 
+//Andar para frente uma certa distância.
+void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, Gyro *giroscopio,long *powerRightL, int valueRef) {
+  // ------------------------------------------------------------------------------------------------
+  // A funcao moveAllpidGyro nao funciona quando chama aqui dentro, ai pra testar a gente
+  // mudou na moveAll para o direito andar com _power-30
+  // E nao mudamos o valor de GIRO, ai por isso ta andando um pouco mais do que o valor especificado,
+  // tem que ver um jeito melhor de medir o GIRO
+  // ------------------------------------------------------------------------------------------------
+
+  int countLeftInitial = motorLeft->getCount();
+  int countLeftUpdate = motorLeft->getCount();
+  long c = DIAMETER*PI;
+  long move = (_distance*GIRO)/c;
+
+  // moveAll(_power, motorLeft, motorRight);
+  moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio, powerRightL, valueRef);
+
+//Enquanto distância entre o enconder atual e o inicial não for o desejado (MOVE) ele vai continuar andando pra frente.
+  while((countLeftUpdate - countLeftInitial) < move ) {
+    // moveAll(_power, motorLeft, motorRight);
+    moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio, powerRightL, valueRef);
+    countLeftUpdate = motorLeft->getCount();
+    Serial.print("countLeftUpdate: ");
+    Serial.println(countLeftUpdate);
+    Serial.print("countLeftInitial: ");
+    Serial.println(countLeftInitial);
+    Serial.print("move: ");
+    Serial.println(move);
+  }
+  stopAll(motorLeft, motorRight);
+}
+
+
+
+// TODO All bellow
 
 //Função que gira o robô no sentido horário.
 void turnClockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight) {
@@ -126,63 +161,6 @@ void turnDegrees(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorD
   int c = DIAMETER*3.14;
   //Perimetro que a roda deve andar para chegar na quantidade de graus desejada
   int move = (GIRO*(WDIST*3.14*2)*((float) _degree/360))/c;
-
-  //Variáveis que armazenam as contagens dos encoderes
-  int countLeftInitial = motorLeft->getCount();
-  int countLeftUpdate = motorLeft->getCount();
-  int countRightInitial = motorRight->getCount();
-  int countRightUpdate = motorRight->getCount();
-
-  //Girar sentido horário
-  if (_clock == HORARIO) {
-    motorLeft->fwd(_power);
-    motorRight->rev(_power);
-    //Enquanto distância entre o enconder atual e o inicial não for o desejado (MOVE) ele vai continuar girando.
-    while((countLeftUpdate - countLeftInitial) < move ) {
-      countLeftUpdate = motorLeft->getCount();
-      Serial.println("Counter L deg");
-      Serial.println(countLeftUpdate);
-    }
-    //Quando a distância do enconder atual e o inicial for igual o desejado (MOVE), o robô tem que parar de girar.
-    stopAll(motorLeft, motorRight);
-  }
-
-  else if (_clock == ANTIHORARIO) {
-    motorRight->fwd(_power);
-    motorLeft->rev(_power);
-    while((countRightUpdate - countRightInitial) < move) {
-      countRightUpdate = motorRight->getCount();
-      Serial.println("Counter R");
-      Serial.println(countRightUpdate);
-    }
-    stopAll(motorLeft, motorRight);
-  }
-  else {
-    //error
-  }
-  stopAll(motorLeft, motorRight);
-}
-
-//Welder Função que gira o robô de acordo com o graus usando giroscopio.
-//dir = HORARIO ou ANTIHORARIO
-void turnDegreesGyro(int _power, int _degree, int _clock, MotorDC *motorLeft, MotorDC *motorRight) {
-  int c = DIAMETER*3.14;
-  // int valueRef = 70; //Positição de referência do Robô, posição inicial
-  // int ps_total = _degree + valueRef;
-
-  // //Perimetro que a roda deve andar para chegar na quantidade de graus desejada
-  int move = (GIRO*(WDIST*3.14*2)*((float) _degree/360))/c;
-  // if (fabs(ps_total) > 180)
-  // {
-  //   ps_total -=180;
-  //   ps_total = 180-ps_total;
-  // }
-  
-  // int move = -180-(ps_total); //PARA DIREITA
-  // int move = 180-(ps_total); //PARA ESQUERDA
-
-
-  //(Grau_Atual - Grau_Desejado)
 
   //Variáveis que armazenam as contagens dos encoderes
   int countLeftInitial = motorLeft->getCount();
@@ -288,37 +266,6 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
   // Serial.println(ang_atual);
 }
 
-//Andar para frente uma certa distância.
-void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, Gyro *giroscopio,long *powerRightL, int valueRef) {
-  // ------------------------------------------------------------------------------------------------
-  // A funcao moveAllpidGyro nao funciona quando chama aqui dentro, ai pra testar a gente
-  // mudou na moveAll para o direito andar com _power-30
-  // E nao mudamos o valor de GIRO, ai por isso ta andando um pouco mais do que o valor especificado,
-  // tem que ver um jeito melhor de medir o GIRO
-  // ------------------------------------------------------------------------------------------------
-
-  int countLeftInitial = motorLeft->getCount();
-  int countLeftUpdate = motorLeft->getCount();
-  long c = DIAMETER*PI;
-  long move = (_distance*GIRO)/c;
-
-  // moveAll(_power, motorLeft, motorRight);
-  moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio, powerRightL, valueRef);
-
-//Enquanto distância entre o enconder atual e o inicial não for o desejado (MOVE) ele vai continuar andando pra frente.
-  while((countLeftUpdate - countLeftInitial) < move ) {
-    // moveAll(_power, motorLeft, motorRight);
-    moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio, powerRightL, valueRef);
-    countLeftUpdate = motorLeft->getCount();
-    Serial.print("countLeftUpdate: ");
-    Serial.println(countLeftUpdate);
-    Serial.print("countLeftInitial: ");
-    Serial.println(countLeftInitial);
-    Serial.print("move: ");
-    Serial.println(move);
-  }
-  stopAll(motorLeft, motorRight);
-}
 
 
 //Andar para trás uma certa distância
@@ -335,8 +282,6 @@ void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight) {
 
   stopAll(motorLeft, motorRight);
 }
-
-
 
 void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef) {
   float powerLeft;
@@ -427,7 +372,6 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   //   }
   // }
 }
-
 
 void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL, float valueRef) {
   float powerLeft;
