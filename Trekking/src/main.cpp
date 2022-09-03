@@ -7,44 +7,7 @@
 #include <Wire.h>
 #include <ColorSensor.h>
 #include <string.h>
-
-// Motor Direita
-#define pin1A 3
-#define pin1B 7
-#define pin1pwm 8
-#define pin1Enc A0
-
-// Motor Esquerda
-#define pin2A 6
-#define pin2B 2
-#define pin2pwm 9
-#define pin2Enc A1
-
-#define pinEnable1 14
-#define pinEnable2 15
-
-//Ultrassom Frente
-#define pinFrontTrigger 52
-#define pinFrontEcho 53
-
-//Ultrassom Esquerda
-#define pinLeftTrigger 50
-#define pinLeftEcho 51
-
-//Ultrassom Direita
-#define pinRightTrigger 48
-#define pinRightEcho 49
-
-// Sensor de cor
-#define pinColorS0 4 // A DEFINIR
-#define pinColorS1 5 // A DEFINIR
-#define pinColorS2 6 // A DEFINIR
-#define pinColorS3 7 // A DEFINIR
-#define pinColorOut 8 // A DEFINIR
-
-#define EIXO_X 0
-#define EIXO_Y 1
-#define EIXO_Z 2
+#include <defines.h>
 
 int firstReading = true;
 int count = 0;
@@ -52,10 +15,6 @@ int valueRef;
 
 MotorDC motorRight (5, 7, 8, 18, 14); 
 MotorDC motorLeft (6, 4, 9, 2, 15);
-
-
-// MotorDC motorRight (3, 7, 8, 18, 14); 
-// MotorDC motorLeft (6, 2, 9, 4, 15);
 
 Gyro *giroscopio = new Gyro();
 
@@ -78,13 +37,11 @@ int x,y,z;
 int ps_final;
 
 void inc (){
-
   motorLeft.encSignal();
   
 }
 
 void incR (){
-
 	motorRight.encSignal();
 }
 
@@ -109,10 +66,11 @@ void setup() {
     tPrint = millis();
 }
 
-void loop() {
-    
+
+
+
+void gyroTest() {
   double gyroValue = giroscopio->requestData();
-  
   // -----------------------------------------------------------------
   // TESTE GIROSCOPIO
   Serial.print("gyroValue: ");
@@ -123,7 +81,9 @@ void loop() {
   // Serial.print("  y: ");
   // Serial.println(y);
   // -----------------------------------------------------------------
+}
 
+void commentedTest() {
   // -----------------------------------------------------------------
   // TESTE SENSOR DE COR
   // colorSensor->readColor();
@@ -166,30 +126,28 @@ void loop() {
   // }
   
   // Delay para começar
-  if (firstReading){
-    firstReading = false;
-    delay(6000);
-  }
+  // if (firstReading){
+  //   firstReading = false;
+  //   delay(6000);
+  // }
 
   
   // moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, 80);
-  turnDegreesGyro2(75,150, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
-  valueRef = giroscopio->requestData();
-  while (true){
-    moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
-  }
+  // turnDegreesGyro2(75,150, ANTIHORARIO, &motorLeft, &motorRight, giroscopio);
+  // valueRef = giroscopio->requestData();
+  // // while (true){
+  //   moveAllpidGyro(80, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+  // }
   // FowardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
   // delay(500);
   // turnDegrees(100, 90, ANTIHORARIO, &motorLeft, &motorRight);
   // TIRAR O DELAY SE FOR TESTAR O CONTROLE PID
   // delay(10000);
 
-  // Teste giroscopio
-  // while (true)
-  // {
-  //   Serial.print(giroscopio->requestData());
-  //   Serial.print(" ");
-  //   Serial.println(giroscopio->requestData()*180/PI);
-  // }
 }
 
+void loop() {
+    moveAll(120, &motorLeft, &motorRight);
+    // gyroTest();
+    // commentedTest();
+}
