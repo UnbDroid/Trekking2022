@@ -26,13 +26,6 @@
 #define pinRightTrigger 48
 #define pinRightEcho 49
 
-// Sensor de cor esquerda
-#define pinColorLeftS0 44
-#define pinColorLeftS1 45
-#define pinColorLeftS2 46
-#define pinColorLeftS3 47
-#define pinColorLeftOut 43
-
 // Sensor de cor
 #define pinColorS0 4 // A DEFINIR
 #define pinColorS1 5 // A DEFINIR
