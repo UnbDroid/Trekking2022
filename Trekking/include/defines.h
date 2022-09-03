@@ -33,6 +33,13 @@
 #define pinColorLeftS3 47
 #define pinColorLeftOut 43
 
+// Sensor de cor
+#define pinColorS0 4 // A DEFINIR
+#define pinColorS1 5 // A DEFINIR
+#define pinColorS2 6 // A DEFINIR
+#define pinColorS3 7 // A DEFINIR
+#define pinColorOut 8 // A DEFINIR
+
 #define EIXO_X 0
 #define EIXO_Y 1
 #define EIXO_Z 2
