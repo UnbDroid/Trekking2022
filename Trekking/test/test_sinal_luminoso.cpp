@@ -99,7 +99,6 @@ void loop() {
     Serial.println(colorSensor->currentColor);
     if (strcmp(colorSensor->currentColor, "yellow") == 0)
     {
-      Serial.print("Pisquei Ladrão");
       digitalWrite(13, HIGH);  
       delay(500); 
     }       

@@ -58,51 +58,51 @@ void ColorSensor::readColor()
         // Analisa AMARELO
         if ((this->green - this->red) < 90) // da pra aumentar esse valor, quando tá só vermelho a diferença fica por volta de 100 ou mais
         {
-            Serial.println("AMARELOOO!!!!");
-            Serial.print("R: ");
-            Serial.print(this->red);
-            Serial.print(" G: ");
-            Serial.print(this->green);
-            Serial.print(" B: ");
-            Serial.println(this->blue);
-            Serial.println(this->green - this->red);
+            // Serial.println("AMARELOOO!!!!");
+            // Serial.print("R: ");
+            // Serial.print(this->red);
+            // Serial.print(" G: ");
+            // Serial.print(this->green);
+            // Serial.print(" B: ");
+            // Serial.println(this->blue);
+            // Serial.println(this->green - this->red);
             strcpy(this->currentColor, "yellow");
         }
         else
         {
-            Serial.print("vermelhoooo!!!! ");
-            Serial.print("R: ");
-            Serial.print(this->red);
-            Serial.print(" G: ");
-            Serial.print(this->green);
-            Serial.print(" B: ");
-            Serial.println(this->blue);
-            Serial.println(this->green - this->red);
+            // Serial.print("vermelhoooo!!!! ");
+            // Serial.print("R: ");
+            // Serial.print(this->red);
+            // Serial.print(" G: ");
+            // Serial.print(this->green);
+            // Serial.print(" B: ");
+            // Serial.println(this->blue);
+            // Serial.println(this->green - this->red);
             strcpy(this->currentColor, "red");
         }
     }
 
     // Analisa se a menor frequencia é verde
     else if (this->green < this->red && this->green < this->blue) {
-        Serial.print("verdeeeeeeeee!!!! ");
-        Serial.print("R: ");
-        Serial.print(this->red);
-        Serial.print(" G: ");
-        Serial.print(this->green);
-        Serial.print(" B: ");
-        Serial.println(this->blue);
+        // Serial.print("verdeeeeeeeee!!!! ");
+        // Serial.print("R: ");
+        // Serial.print(this->red);
+        // Serial.print(" G: ");
+        // Serial.print(this->green);
+        // Serial.print(" B: ");
+        // Serial.println(this->blue);
         strcpy(this->currentColor, "green");
     }
 
     // Analisa se a menor frequencia é azul
     else if (this->blue < this->red && this->blue < this->green) {
-        Serial.print("azuuuuuuuul!!!! ");
-        Serial.print("R: ");
-        Serial.print(this->red);
-        Serial.print(" G: ");
-        Serial.print(this->green);
-        Serial.print(" B: ");
-        Serial.println(this->blue);
+        // Serial.print("azuuuuuuuul!!!! ");
+        // Serial.print("R: ");
+        // Serial.print(this->red);
+        // Serial.print(" G: ");
+        // Serial.print(this->green);
+        // Serial.print(" B: ");
+        // Serial.println(this->blue);
         strcpy(this->currentColor, "blue");
     }
 }

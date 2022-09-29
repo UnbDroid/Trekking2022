@@ -86,23 +86,20 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(18), incR, RISING);
     error[0] = 0;
     error[1] = millis();
-    
-    pinMode(13, OUTPUT);
 
     delay(2000);
     tPrint = millis();
 }
 
 void loop() {
+    // Delay para começar
+    if (firstReading){
+    firstReading = false;
+    delay(6000);
+    }
     colorSensor->readColor();
     Serial.print("Cor lida: ");
     Serial.println(colorSensor->currentColor);
-    if (strcmp(colorSensor->currentColor, "yellow") == 0)
-    {
-      Serial.print("Pisquei Ladrão");
-      digitalWrite(13, HIGH);  
-      delay(500); 
-    }       
-    digitalWrite(13, LOW);
+    delay(1000);
 }
 

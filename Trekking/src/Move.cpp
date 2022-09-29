@@ -123,12 +123,12 @@ void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRigh
     // moveAll(_power, motorLeft, motorRight);
     moveAllpidGyro(_power, motorLeft, motorRight, soma, error, giroscopio, powerRightL, valueRef);
     countLeftUpdate = motorLeft->getCount();
-    Serial.print("countLeftUpdate: ");
-    Serial.println(countLeftUpdate);
-    Serial.print("countLeftInitial: ");
-    Serial.println(countLeftInitial);
-    Serial.print("move: ");
-    Serial.println(move);
+    // Serial.print("countLeftUpdate: ");
+    // Serial.println(countLeftUpdate);
+    // Serial.print("countLeftInitial: ");
+    // Serial.println(countLeftInitial);
+    // Serial.print("move: ");
+    // Serial.println(move);
   }
   stopAll(motorLeft, motorRight);
 }
@@ -332,8 +332,8 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
 
   powerLeft = abs(_power);
   powerRight = abs((*powerRightL)) - (error[0]*kp); //+ (*soma)*ki;
-  Serial.print(" powerRight : ");
-  Serial.println(powerRight);
+  // Serial.print(" powerRight : ");
+  // Serial.println(powerRight);
 
   powerLeft = (powerLeft > 255) ? 255 : powerLeft;
   powerRight = (powerRight > 255) ? 255 : powerRight;
@@ -405,10 +405,10 @@ void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, floa
 
   powerLeft = abs(_power);
   powerRight = abs((*powerRightL)) + (error[0]*kp) + (*soma)*ki;
-  Serial.println("LEFT");
-  Serial.println(powerLeft);
-  Serial.println("right");
-  Serial.println(powerRight);
+  // Serial.println("LEFT");
+  // Serial.println(powerLeft);
+  // Serial.println("right");
+  // Serial.println(powerRight);
 
   powerLeft = (powerLeft > 255) ? 255 : powerLeft;
   powerRight = (powerRight > 255) ? 255 : powerRight;
