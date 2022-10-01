@@ -14,17 +14,21 @@
 #define pinEnable1 14
 #define pinEnable2 15
 
-//Ultrassom Frente
-#define pinFrontTrigger 52
-#define pinFrontEcho 53
+//Ultrassom US1
+#define pinUS1Trigger 53
+#define pinUS1Echo 51
 
-//Ultrassom Esquerda
-#define pinLeftTrigger 50
-#define pinLeftEcho 51
+//Ultrassom US2
+#define pinUS2Trigger 52
+#define pinUS2tEcho 50
 
-//Ultrassom Direita
-#define pinRightTrigger 48
-#define pinRightEcho 49
+//Ultrassom US3
+#define pinUS3Trigger 49
+#define pinUS3Echo 47
+
+//Ultrassom US4
+#define pinUS4Trigger 43
+#define pinUS4Echo 45
 
 // Sensor de cor
 #define pinColorS0 4 // A DEFINIR
