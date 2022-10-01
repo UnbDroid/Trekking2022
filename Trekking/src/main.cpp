@@ -5,40 +5,8 @@
 #include <Move.h>
 #include <Gyro.h>
 #include <Wire.h>
+#include <defines.h>
 
-// Motor Direita
-#define pin1A 3
-#define pin1B 7
-#define pin1pwm 8
-#define pin1Enc A0
-
-// Motor Esquerda
-#define pin2A 6
-#define pin2B 2
-#define pin2pwm 9
-#define pin2Enc A1
-
-#define pinEnable1 14
-#define pinEnable2 15
-
-//Ultrassom Frente
-#define pinFrontTrigger 52
-#define pinFrontEcho 53
-
-//Ultrassom Esquerda
-#define pinLeftTrigger 50
-#define pinLeftEcho 51
-
-//Ultrassom Direita
-#define pinRightTrigger 48
-#define pinRightEcho 49
-
-// Sensor de cor
-#define pinColorS0 22
-#define pinColorS1 23
-#define pinColorS2 24
-#define pinColorS3 25
-#define pinColorOut 27
 
 #define EIXO_X 0
 #define EIXO_Y 1
@@ -88,14 +56,33 @@ void setup() {
     error[1] = millis();
     
     pinMode(13, OUTPUT);
+    pinMode(pinColorS0, OUTPUT);
+    pinMode(pinColorS1, OUTPUT);
+    pinMode(pinColorS2, OUTPUT);
+    pinMode(pinColorS3, OUTPUT);
+    pinMode(pinColorOut, INPUT);
 
     delay(2000);
     tPrint = millis();
 }
 
 void loop() {
-    digitalWrite(13, HIGH);  
-    delay(500); 
-    digitalWrite(13, LOW);
-    delay(500);
+    // digitalWrite(13, HIGH);  
+    // delay(500); 
+    // digitalWrite(13, LOW);
+    // delay(500);
+
+    
+    digitalWrite(pinColorS0, HIGH);
+    digitalWrite(pinColorS1, HIGH);
+    digitalWrite(pinColorS2, HIGH);
+    digitalWrite(pinColorS3, LOW);
+
+    int redFrequency = pulseIn(pinColorOut, LOW);
+  
+   // Printing the RED (R) value
+    Serial.print("R = ");
+    Serial.print(redFrequency);
+    delay(100);
+
 }

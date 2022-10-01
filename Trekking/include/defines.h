@@ -25,17 +25,16 @@
 //Ultrassom US3
 #define pinUS3Trigger 49
 #define pinUS3Echo 47
-
 //Ultrassom US4
 #define pinUS4Trigger 43
 #define pinUS4Echo 45
 
 // Sensor de cor
-#define pinColorS0 4 // A DEFINIR
-#define pinColorS1 5 // A DEFINIR
-#define pinColorS2 6 // A DEFINIR
-#define pinColorS3 7 // A DEFINIR
-#define pinColorOut 8 // A DEFINIR
+#define pinColorS0 45
+#define pinColorS1 43
+#define pinColorS2 41
+#define pinColorS3 39
+#define pinColorOut 37
 
 #define EIXO_X 0
 #define EIXO_Y 1
