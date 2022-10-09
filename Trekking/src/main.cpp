@@ -7,82 +7,51 @@
 #include <Wire.h>
 #include <defines.h>
 
+Ultrasonic ultrasonic1(US1Trigger, US1Echo);
+Ultrasonic ultrasonic2(US2Trigger, US2Echo);
+Ultrasonic ultrasonic3(US3Trigger, US3Echo);
+Ultrasonic ultrasonic4(US4Trigger, US4Echo);
 
-#define EIXO_X 0
-#define EIXO_Y 1
-#define EIXO_Z 2
-
-int firstReading = true;
-int count = 0;
-int valueRef;
-
-MotorDC motorRight (5, 7, 8, 18, 14); 
-MotorDC motorLeft (6, 4, 9, 2, 15);
-
-Gyro *giroscopio = new Gyro();
-
-ColorSensor *colorSensor = new ColorSensor(pinColorS0, pinColorS1, pinColorS2, pinColorS3, pinColorOut);
-
-float soma = 0;
-float error [2];
-long powerRightL = 70;
-unsigned long tPrint;
-int x,y,z;
-
-void inc (){
-    motorLeft.encSignal();
-  
-}
-
-void incR (){
-    motorRight.encSignal();
-}
-
-void setup() {
+void setup()
+{
     Serial.begin(9600);
-    Wire.begin();
-
-    // Inicializa o HMC5883
-    Wire.beginTransmission(address);
-    // Seleciona o modo
-    Wire.write(0x02); 
-    // Modo de medicao continuo
-    Wire.write(0x00); 
-    Wire.endTransmission();
-
-    attachInterrupt(digitalPinToInterrupt(2), inc, RISING);//VERIFICAR 
-    attachInterrupt(digitalPinToInterrupt(18), incR, RISING);
-    error[0] = 0;
-    error[1] = millis();
-    
-    pinMode(13, OUTPUT);
-    pinMode(pinColorS0, OUTPUT);
-    pinMode(pinColorS1, OUTPUT);
-    pinMode(pinColorS2, OUTPUT);
-    pinMode(pinColorS3, OUTPUT);
-    pinMode(pinColorOut, INPUT);
-
-    delay(2000);
-    tPrint = millis();
 }
 
-void loop() {
-    // digitalWrite(13, HIGH);  
-    // delay(500); 
-    // digitalWrite(13, LOW);
-    // delay(500);
+void loop()
+{
+    // Le as informacoes do sensor, em cm e pol
+    float cm1Msec;
+    float cm2Msec;
+    float cm3Msec;
+    float cm4Msec;
 
+    long microsec1 = ultrasonic1.timing();
+    cm1Msec = ultrasonic1.convert(microsec1, Ultrasonic::CM);
+ 
+    long microsec2 = ultrasonic2.timing();
+    cm2Msec = ultrasonic2.convert(microsec2, Ultrasonic::CM);
+ 
+    long microsec3 = ultrasonic3.timing();
+    cm3Msec = ultrasonic3.convert(microsec3, Ultrasonic::CM);
+ 
+    long microsec4 = ultrasonic4.timing();
+    cm4Msec = ultrasonic4.convert(microsec4, Ultrasonic::CM);
+ 
+
+    // Exibe informacoes no serial monitor
+    Serial.print("US1 cm: ");
+    Serial.print(cm1Msec);
     
-    digitalWrite(pinColorS0, HIGH);
-    digitalWrite(pinColorS1, HIGH);
-    digitalWrite(pinColorS2, HIGH);
-    digitalWrite(pinColorS3, LOW);
+    Serial.print("\tUS2 cm: ");
+    Serial.print(cm2Msec);
+    
+    Serial.print("\tUS3 cm: ");
+    Serial.print(cm3Msec);
+    
+    Serial.print("\tUS4 cm: ");
+    Serial.print(cm4Msec);
+    
+    Serial.println();
 
-    int redFrequency = pulseIn(pinColorOut, LOW);
-  
-   // Printing the RED (R) value
-    Serial.print("R = ");
-    Serial.print(redFrequency);
-    delay(100);
-
+    delay(1000);
 }

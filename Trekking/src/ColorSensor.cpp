@@ -7,50 +7,50 @@
 #include <ColorSensor.h>
 #include <string.h>
 
-ColorSensor::ColorSensor(int pinColorS0, int pinColorS1, int pinColorS2, int pinColorS3, int pinColorOut)
+ColorSensor::ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2, int ColorSensorS3, int ColorSensorOut)
 {
-    this->pinColorS0 = pinColorS0;
-    this->pinColorS1 = pinColorS1;
-    this->pinColorS2 = pinColorS2;
-    this->pinColorS3 = pinColorS3;
-    this->pinColorOut = pinColorOut;
+    this->ColorSensorS0 = ColorSensorS0;
+    this->ColorSensorS1 = ColorSensorS1;
+    this->ColorSensorS2 = ColorSensorS2;
+    this->ColorSensorS3 = ColorSensorS3;
+    this->ColorSensorOut = ColorSensorOut;
 
-    pinMode(pinColorS0, OUTPUT); // Pino S0 configurado como saida
-    pinMode(pinColorS1, OUTPUT); // Pino S1 configurado como saida
-    pinMode(pinColorS2, OUTPUT); // Pino S2 configurado como saida
-    pinMode(pinColorS3, OUTPUT); // Pino S3 configurado como saida
-    pinMode(pinColorOut, INPUT); // Pino OUT configurado como entrada
+    pinMode(ColorSensorS0, OUTPUT); // Pino S0 configurado como saida
+    pinMode(ColorSensorS1, OUTPUT); // Pino S1 configurado como saida
+    pinMode(ColorSensorS2, OUTPUT); // Pino S2 configurado como saida
+    pinMode(ColorSensorS3, OUTPUT); // Pino S3 configurado como saida
+    pinMode(ColorSensorOut, INPUT); // Pino OUT configurado como entrada
 
     // Configura a escala de frequência para 20%
-    digitalWrite(pinColorS0,HIGH);
-    digitalWrite(pinColorS1,LOW);
+    digitalWrite(ColorSensorS0, HIGH);
+    digitalWrite(ColorSensorS1, LOW);
 }
 
 void ColorSensor::readColor()
 {
     // Configura a leitura para os fotodiodos Red (Vermelho)
-    digitalWrite(pinColorS2,LOW);
-    digitalWrite(pinColorS3,LOW);
+    digitalWrite(ColorSensorS2, LOW);
+    digitalWrite(ColorSensorS3, LOW);
     delay(50);
 
     // Lê a frequencia de saída do fotodiodo vermelho
-    this->red = pulseIn(pinColorOut, LOW);
+    this->red = pulseIn(ColorSensorOut, LOW);
 
     // Configura a leitura para os fotodiodos Green (Verde)
-    digitalWrite(pinColorS2,HIGH);
-    digitalWrite(pinColorS3,HIGH);
+    digitalWrite(ColorSensorS2, HIGH);
+    digitalWrite(ColorSensorS3, HIGH);
     delay(50);
 
     // Lê a frequencia de saída do fotodiodo verde
-    this->green = pulseIn(pinColorOut, LOW);
+    this->green = pulseIn(ColorSensorOut, LOW);
 
     // Configura a leitura para os fotodiodos Blue (Azul)
-    digitalWrite(pinColorS2,LOW);
-    digitalWrite(pinColorS3,HIGH);
+    digitalWrite(ColorSensorS2, LOW);
+    digitalWrite(ColorSensorS3, HIGH);
     delay(50);
 
     // Lê a frequencia de saída do fotodiodo azul
-    this->blue = pulseIn(pinColorOut, LOW);
+    this->blue = pulseIn(ColorSensorOut, LOW);
 
     // Analisa se a menor frequencia é vermelha
     if (this->red < this->green && this->red < this->blue)
@@ -83,7 +83,8 @@ void ColorSensor::readColor()
     }
 
     // Analisa se a menor frequencia é verde
-    else if (this->green < this->red && this->green < this->blue) {
+    else if (this->green < this->red && this->green < this->blue)
+    {
         // Serial.print("verdeeeeeeeee!!!! ");
         // Serial.print("R: ");
         // Serial.print(this->red);
@@ -95,7 +96,8 @@ void ColorSensor::readColor()
     }
 
     // Analisa se a menor frequencia é azul
-    else if (this->blue < this->red && this->blue < this->green) {
+    else if (this->blue < this->red && this->blue < this->green)
+    {
         // Serial.print("azuuuuuuuul!!!! ");
         // Serial.print("R: ");
         // Serial.print(this->red);

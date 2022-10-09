@@ -1,3 +1,5 @@
+#define SCL 20
+#define SDA 21
 
 // Motor Direita
 #define pin1A 3
@@ -14,27 +16,28 @@
 #define pinEnable1 14
 #define pinEnable2 15
 
-//Ultrassom US1
-#define pinUS1Trigger 53
-#define pinUS1Echo 51
+// Ultrassom US1
+#define US1Echo 4
+#define US1Trigger 5
 
-//Ultrassom US2
-#define pinUS2Trigger 52
-#define pinUS2tEcho 50
+// Ultrassom US2
+#define US2Echo 6 
+#define US2Trigger 7
 
-//Ultrassom US3
-#define pinUS3Trigger 49
-#define pinUS3Echo 47
-//Ultrassom US4
-#define pinUS4Trigger 43
-#define pinUS4Echo 45
+// Ultrassom US3
+#define US3Echo 10
+#define US3Trigger 11
+
+// Ultrassom US4
+#define US4Echo 12
+#define US4Trigger 13
 
 // Sensor de cor
-#define pinColorS0 45
-#define pinColorS1 43
-#define pinColorS2 41
-#define pinColorS3 39
-#define pinColorOut 37
+#define ColorSensorS0 39
+#define ColorSensorS1 41
+#define ColorSensorS2 22
+#define ColorSensorS3 24
+#define ColorSensorOut 37
 
 #define EIXO_X 0
 #define EIXO_Y 1
