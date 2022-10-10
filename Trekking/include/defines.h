@@ -29,8 +29,8 @@
 #define US3Trigger 11
 
 // Ultrassom US4
-#define US4Echo 12
-#define US4Trigger 13
+#define US4Echo 13
+#define US4Trigger 12
 
 // Sensor de cor
 #define ColorSensorS0 39
