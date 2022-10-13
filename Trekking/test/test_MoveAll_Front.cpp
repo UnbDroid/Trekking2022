@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <MotorDC.h>
-#include <SensorColor.h>
 #include <Ultrasonic.h>
 #include <Move.h>
 #include <Gyro.h>
