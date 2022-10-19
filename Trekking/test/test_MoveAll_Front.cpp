@@ -12,8 +12,9 @@ int firstReading = true;
 int count = 0;
 int valueRef;
 
-MotorDC motorRight (5, 7, 8, 18, 14); 
-MotorDC motorLeft (6, 4, 9, 2, 15);
+MotorDC motorRight (pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1); 
+MotorDC motorLeft (pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
+
 
 
 void setup() {
