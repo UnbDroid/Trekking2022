@@ -4,14 +4,14 @@
 // Motor Direita
 #define pin1A 45
 #define pin1B 49
-#define pin1pwm 3
-#define pin1Enc A0
+#define pin1pwm 2
+#define pin1Enc 32
 
 // Motor Esquerda
 #define pin2A 47
 #define pin2B 43
-#define pin2pwm 2
-#define pin2Enc A1
+#define pin2pwm 3
+#define pin2Enc 30 
 
 #define pinEnable1 50
 #define pinEnable2 52
