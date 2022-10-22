@@ -11,12 +11,10 @@ int firstReading = true;
 int count = 0;
 int valueRef;
 
-MotorDC motorRight(5, 7, 8, 18, 14);
-MotorDC motorLeft(6, 4, 9, 2, 15);
+MotorDC motorRight(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
+MotorDC motorLeft(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
 
 Gyro *giroscopio = new Gyro();
-
-ColorSensor *colorSensor = new ColorSensor(ColorSensorS0, ColorSensorS1, ColorSensorS2, ColorSensorS3, ColorSensorOut);
 
 float soma = 0;
 float error[2];
@@ -47,7 +45,7 @@ void setup()
     Wire.write(0x00);
     Wire.endTransmission();
 
-    attachInterrupt(digitalPinToInterrupt(2), inc, RISING); // VERIFICAR
+    attachInterrupt(digitalPinToInterrupt(19), inc, RISING); // VERIFICAR
     attachInterrupt(digitalPinToInterrupt(18), incR, RISING);
     error[0] = 0;
     error[1] = millis();
@@ -64,7 +62,7 @@ void loop()
         firstReading = false;
         delay(6000);
     }
-    FowardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+    ForwardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
     int rightEncoderReading = motorRight.getCount();
     int leftEncoderReading = motorLeft.getCount();
     Serial.print("Right Encoder: ");

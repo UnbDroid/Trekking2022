@@ -6,11 +6,11 @@
 
 #define HORARIO 0
 #define ANTIHORARIO 1
-#define DIAMETER 12 //roda tem 12,22cm de diametro
+#define DIAMETER 12 // roda tem 12,22cm de diametro
 #define PI 3.14159265359
-#define GIRO 400 //o enconder conta 400 para dar 1 giro na roda
+#define GIRO 400 // o enconder conta 400 para dar 1 giro na roda
 // #define WDIST 5 //distancia entre as duas rodas em cm
-#define WDIST 12 //distancia entre as duas rodas em cm
+#define WDIST 12 // distancia entre as duas rodas em cm
 
 /* Move All
   Descricao: Liga os dois motor6es.
@@ -19,7 +19,7 @@
 */
 
 void moveAll(int potencia, MotorDC *motorLeft, MotorDC *motorRight);
-//Por causa do encoder no objeto MotorDC a gente usa o ponteiro.
+// Por causa do encoder no objeto MotorDC a gente usa o ponteiro.
 
 /* Stop All
   Descricao: Desliga os dois motores.
@@ -84,7 +84,7 @@ void turnDegreesGyro2(int _power, long _degrees, int _clock, MotorDC *motorLeft,
     - distancia: Distância em centímetros.
 */
 
-void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma,float *error, Gyro *giroscopio,long *powerRightL, int valueRef);
+void ForwardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, int valueRef);
 
 /* Rev Cm
   Descricao: Anda para trás uma certa quantidade de centímetros.
@@ -95,7 +95,6 @@ void FowardCm(int _power, long _distance, MotorDC *motorLeft, MotorDC *motorRigh
 
 void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight);
 
-void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long* powerRightL, long valueRef);
-
+void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef);
 
 #endif

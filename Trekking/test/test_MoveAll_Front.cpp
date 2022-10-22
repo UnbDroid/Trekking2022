@@ -15,8 +15,6 @@ int valueRef;
 MotorDC motorRight (pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1); 
 MotorDC motorLeft (pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
 
-
-
 void setup() {
     Serial.begin(9600);
 }
