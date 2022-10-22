@@ -124,7 +124,17 @@ GPIO.setup(18, GPIO.OUT)
 GPIO.setup(22, GPIO.OUT)
 GPIO.setup(24, GPIO.OUT)
 
-camera = cv2.VideoCapture(6)
+# camera = cv2.VideoCapture(10)
+cams_test = 100
+for i in range(-1, cams_test):
+    camera = cv2.VideoCapture(i)
+    test, frame = camera.read()
+    print("i : "+str(i) + "// result: "+ str(test))
+    if test:
+        print("SUCCESSFULL!")
+        break
+
+
 if not camera.isOpened():
 	print("Buh\n")
 	exit()
@@ -133,7 +143,7 @@ if not camera.isOpened():
 for x in range(40):
 	image = getImage(camera)
 
-while(true):
+while(True):
 	res = findCone(getImage(camera))
 	res += 20
 	if(res > 20): res = 20
