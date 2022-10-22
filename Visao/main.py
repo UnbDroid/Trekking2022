@@ -124,7 +124,8 @@ GPIO.setup(18, GPIO.OUT)
 GPIO.setup(22, GPIO.OUT)
 GPIO.setup(24, GPIO.OUT)
 
-# camera = cv2.VideoCapture(10)
+# camera = cv2.VideoCapture(2)
+
 cams_test = 100
 for i in range(-1, cams_test):
     camera = cv2.VideoCapture(i)
@@ -133,8 +134,6 @@ for i in range(-1, cams_test):
     if test:
         print("SUCCESSFULL!")
         break
-
-
 if not camera.isOpened():
 	print("Buh\n")
 	exit()
