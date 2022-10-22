@@ -118,13 +118,13 @@ def findCone(_imageSrc):
 
 	return 50-100*((moments["m10"]/moments["m00"])/num_columns)
 
-GPIO.setMode(GPIO.BOARD)
-GPIO.setup(23, GPIO.OUT)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(16, GPIO.OUT)
+GPIO.setup(18, GPIO.OUT)
+GPIO.setup(22, GPIO.OUT)
 GPIO.setup(24, GPIO.OUT)
-GPIO.setup(25, GPIO.OUT)
-GPIO.setup(28, GPIO.OUT)
 
-camera = cv2.VideoCapture(2)
+camera = cv2.VideoCapture(6)
 if not camera.isOpened():
 	print("Buh\n")
 	exit()
@@ -139,10 +139,10 @@ while(true):
 	if(res > 20): res = 20
 	if(res < 0): res = 0
 	res = bin(int(res*0.75))
-	GPIO.output(23, (res & (1 << 0)) >> 0)
-	GPIO.output(24, (res & (1 << 1)) >> 1)
-	GPIO.output(25, (res & (1 << 2)) >> 2)
-	GPIO.output(8, (res & (1 << 3)) >> 3)
+	GPIO.output(16, (res & (1 << 0)) >> 0)
+	GPIO.output(18, (res & (1 << 1)) >> 1)
+	GPIO.output(22, (res & (1 << 2)) >> 2)
+	GPIO.output(24, (res & (1 << 3)) >> 3)
 
 
 """"
@@ -166,7 +166,7 @@ void* vision_thread(void* args)
 {
   int key;
   Mat img_hsv, dilated, eroded ,img_original, frame_threshold;
-  img_original = imread("./"+String(argv[1]),IMREAD_COLOR);
+ img_original = imread("./"+String(argv[1]),IMREAD_COLOR);
 
   visonArgs* vision_arguments = (visionArgs*) args;
   float* accuracy = (float*) vision_arguments->vis_accuracy;
