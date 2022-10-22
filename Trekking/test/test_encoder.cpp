@@ -22,8 +22,13 @@ long powerRightL = 70;
 unsigned long tPrint;
 int x, y, z;
 
-void inc()
-{
+int potencia = 40;
+int distanciaCm = 200;
+int rightEncoderReading = motorRight.getCount();
+int leftEncoderReading = motorLeft.getCount();
+
+void incL()
+{   
     motorLeft.encSignal();
 }
 
@@ -35,8 +40,8 @@ void incR()
 void setup()
 {
     Serial.begin(9600);
-    Wire.begin();
 
+    Wire.begin();
     // Inicializa o HMC5883
     Wire.beginTransmission(address);
     // Seleciona o modo
@@ -45,8 +50,12 @@ void setup()
     Wire.write(0x00);
     Wire.endTransmission();
 
-    attachInterrupt(digitalPinToInterrupt(19), inc, RISING); // VERIFICAR
-    attachInterrupt(digitalPinToInterrupt(18), incR, RISING);
+
+    uint8_t pin1Interrupt = digitalPinToInterrupt(pin1Enc);
+    uint8_t pin2Interrupt = digitalPinToInterrupt(pin2Enc);
+
+    attachInterrupt(pin1Interrupt, incR, RISING); // VERIFICAR
+    attachInterrupt(pin2Interrupt, incL, RISING);
     error[0] = 0;
     error[1] = millis();
 
@@ -60,11 +69,18 @@ void loop()
     if (firstReading)
     {
         firstReading = false;
-        delay(6000);
+        delay(1000);
     }
-    ForwardCm(80, 200, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
-    int rightEncoderReading = motorRight.getCount();
-    int leftEncoderReading = motorLeft.getCount();
+
+    moveAll(potencia, &motorLeft, &motorRight);
+    delay(1000);
+    stopAll(&motorLeft, &motorRight);
+
+    Serial.println("\n\nStopped moving\n\n");
+
+    rightEncoderReading = motorRight.getCount();
+    leftEncoderReading = motorLeft.getCount();
+
     Serial.print("Right Encoder: ");
     Serial.println(rightEncoderReading);
     Serial.print("Left Encoder: ");
