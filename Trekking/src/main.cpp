@@ -9,24 +9,34 @@ Gyro *giroscopio = new Gyro();
 
 void setup() {
     Serial.begin(9600);
-    pinMode(14, INPUT);
-    pinMode(15, INPUT);
-    pinMode(16, INPUT);
-    pinMode(17, INPUT);
+    Wire.begin();
+    
+    // Inicializa o HMC5883
+    Wire.beginTransmission(address);
+    // Seleciona o modo
+    Wire.write(0x02); 
+    // Modo de medicao continuo
+    Wire.write(0x00); 
+    Wire.endTransmission();
+    pinMode(SinalLuminoso, OUTPUT);
+    digitalWrite(SinalLuminoso, LOW);
 }
 
+void gyroTest() {
+  double gyroValue = giroscopio->requestData();
+  // -----------------------------------------------------------------
+  Serial.print("gyroValue: ");
+  Serial.println(gyroValue);
+  // -----------------------------------------------------------------
+}
 
 void loop() {
-    uint8_t bits[4];
-    bits[0] = digitalRead(14);
-    bits[1] = digitalRead(15);
-    bits[2] = digitalRead(16);
-    bits[3] = digitalRead(17);
-    int decValue = bits[0] + (bits[1] * 2) + (bits[2]*2*2) + (bits[3]*2*2*2); 
+    digitalWrite(SinalLuminoso, HIGH);
+    delay(500);
+    digitalWrite(SinalLuminoso, LOW);
+    delay(500);
 
-    Serial.print("Angulo do Cone = ");
-    Serial.println(decValue);
-
-
-
+    
+    gyroTest();
+    gyroTest();
 }
