@@ -1,5 +1,6 @@
 #include <UltrasonicFilter.h>
 #include <ColorSensor.h>
+#include <string.h>
 
 UltrasonicFilter::UltrasonicFilter() {}
 
@@ -98,10 +99,17 @@ void UltrasonicFilter::filter(Ultrasonic ultrasonic)
 
 void UltrasonicFilter::printArray(float values[])
 {
+    char str_values[65];
+    // Inicializa a string vazia
+    strcpy(str_values, "");
     for (int i = 0; i < NUM_OF_RESULTS; i++)
     {
-        Serial.print(values[i]);
-        Serial.print(" ");
+        char aux[10];
+        // Converte o float para string
+        sprintf(aux, "%g", values[i]);
+        // Concatena os valores na string com um espaço e new line entre eles
+        strcat(str_values, aux);
+        strcat(str_values, " \n");
     }
-    Serial.println();
+    Serial.println(str_values);
 }
