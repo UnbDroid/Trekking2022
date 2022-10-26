@@ -7,6 +7,10 @@
 #include <ColorSensor.h>
 #include <string.h>
 
+#define R 0
+#define G 1
+#define B 2
+
 ColorSensor::ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2, int ColorSensorS3, int ColorSensorOut)
 {
     this->ColorSensorS0 = ColorSensorS0;
@@ -52,59 +56,29 @@ void ColorSensor::readColor()
     // Lê a frequencia de saída do fotodiodo azul
     this->blue = pulseIn(ColorSensorOut, LOW);
 
-    // Analisa se a menor frequencia é vermelha
-    if (this->red < this->green && this->red < this->blue)
-    {
-        // Analisa AMARELO
-        if ((this->green - this->red) < 90) // da pra aumentar esse valor, quando tá só vermelho a diferença fica por volta de 100 ou mais
-        {
-            // Serial.println("AMARELOOO!!!!");
-            // Serial.print("R: ");
-            // Serial.print(this->red);
-            // Serial.print(" G: ");
-            // Serial.print(this->green);
-            // Serial.print(" B: ");
-            // Serial.println(this->blue);
-            // Serial.println(this->green - this->red);
-            strcpy(this->currentColor, "yellow");
-        }
-        else
-        {
-            // Serial.print("vermelhoooo!!!! ");
-            // Serial.print("R: ");
-            // Serial.print(this->red);
-            // Serial.print(" G: ");
-            // Serial.print(this->green);
-            // Serial.print(" B: ");
-            // Serial.println(this->blue);
-            // Serial.println(this->green - this->red);
-            strcpy(this->currentColor, "red");
-        }
-    }
+    char string[1024];
+    sprintf(string, "RGB [%d] [%d] [%d]", this->red, this->green, this->blue);
 
-    // Analisa se a menor frequencia é verde
-    else if (this->green < this->red && this->green < this->blue)
-    {
-        // Serial.print("verdeeeeeeeee!!!! ");
-        // Serial.print("R: ");
-        // Serial.print(this->red);
-        // Serial.print(" G: ");
-        // Serial.print(this->green);
-        // Serial.print(" B: ");
-        // Serial.println(this->blue);
+
+
+    Serial.println(string);
+
+    int limiarRGB_Yellow[3] = {28, 43, 48};
+    int limiarRGB_Green[3] = {112, 78, 86};
+    int limiarRGB_Red[3] = {33, 84, 66};
+    int errorAmplitude = 10;
+
+    //TODO implement binary space partitioning
+    // save in file
+
+    if(this->red <= limiarRGB_Yellow[R]+errorAmplitude && this->red >= limiarRGB_Yellow[R]-errorAmplitude ) {
+        strcpy(this->currentColor, "yellow");
+    } else if(this->red <= limiarRGB_Green[R]+errorAmplitude && this->red >= limiarRGB_Green[R]-errorAmplitude ) {
         strcpy(this->currentColor, "green");
-    }
+    } else if(this->red <= limiarRGB_Red[R]+errorAmplitude && this->red >= limiarRGB_Red[R]-errorAmplitude ) {
+        strcpy(this->currentColor, "red");
+    } else {
 
-    // Analisa se a menor frequencia é azul
-    else if (this->blue < this->red && this->blue < this->green)
-    {
-        // Serial.print("azuuuuuuuul!!!! ");
-        // Serial.print("R: ");
-        // Serial.print(this->red);
-        // Serial.print(" G: ");
-        // Serial.print(this->green);
-        // Serial.print(" B: ");
-        // Serial.println(this->blue);
-        strcpy(this->currentColor, "blue");
+        strcpy(this->currentColor, "red");
     }
 }
