@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 import RPi.GPIO as GPIO
+import time
+
+millis = lambda: int(round(time.time() * 1000))
 
 def getImage(_camera):
 	ret, image = _camera.read()
@@ -13,12 +16,14 @@ def getImage(_camera):
 	return image
 
 def showImage(_image):
+	maxT = 5
 	# Display output image
 	cv2.imshow('image',_image)
 
 	# Wait longer to prevent freeze for videos.
+	tnow=millis()
 	while(True):
-		if cv2.waitKey(33) & 0xFF == ord('q'):
+		if (cv2.waitKey(33) & 0xFF == ord('q')) or millis()-tnow > maxT:
 			break
 
 def nothing(x):
@@ -111,18 +116,41 @@ def findCone(_imageSrc):
 	blurred = cv2.GaussianBlur(dilatedImg, (3,3), 0)
 	total = cv2.countNonZero(blurred)
 
-	moments = cv2.moments(blurred, True)
-	#print(moments)
+	#print(cv2.__version__[0])
+	im, contours, hie = cv2.findContours(blurred, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+	c = None
+	if len(contours) != 0:
+		c = max(contours, key = cv2.contourArea)
+		x,y,w,h = cv2.boundingRect(c)
+		#print(x,y)
+		cv2.rectangle(blurred, (x,y), (x+w,y+h), (0,255,0),2)
+	else:
+		print("nonono")
+
+	if(c is not None):
+		moments = cv2.moments(c, True)
+	else:
+		moments = cv2.moments(blurred, True)
+	#print("MOMENTS:")
+	#print(moments["m10"], moments["m00"])
 	num_columns = np.shape(_imageSrc)[1]
 	showImage(blurred)
+	if(num_columns == 0 or moments["m00"] == 0):
+            print("ZERO")
+            return 0
+	
+	return (moments["m10"]/moments["m00"])/num_columns
 
-	return 50-100*((moments["m10"]/moments["m00"])/num_columns)
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(16, GPIO.OUT)
 GPIO.setup(18, GPIO.OUT)
 GPIO.setup(22, GPIO.OUT)
 GPIO.setup(24, GPIO.OUT)
+GPIO.setup(36, GPIO.OUT)
+GPIO.setup(38, GPIO.OUT)
+GPIO.setup(40, GPIO.OUT)
 
 # camera = cv2.VideoCapture(2)
 
@@ -144,14 +172,24 @@ for x in range(40):
 
 while(True):
 	res = findCone(getImage(camera))
-	res += 20
-	if(res > 20): res = 20
+
+	#print(res, end="\r")
+	res -= 1
+	res *= -1
+	if(res > 1): res = 1
 	if(res < 0): res = 0
-	res = bin(int(res*0.75))
+	res *= 180
+	res = int(res)
+	print("\033[F\033[F\033[J")
+	print(res)
+    
 	GPIO.output(16, (res & (1 << 0)) >> 0)
 	GPIO.output(18, (res & (1 << 1)) >> 1)
 	GPIO.output(22, (res & (1 << 2)) >> 2)
 	GPIO.output(24, (res & (1 << 3)) >> 3)
+	GPIO.output(36, (res & (1 << 3)) >> 3)
+	GPIO.output(38, (res & (1 << 3)) >> 3)
+	GPIO.output(40, (res & (1 << 3)) >> 3)
 
 
 """"
