@@ -113,6 +113,19 @@ void ColorSensor::readColor()
 void ColorSensor::calibrate()
 {
     // TODO
+    //  - wait for button to start
+    //  - read 10 yellow, run average
+    //  - populate limiarRGB_Yellow array
+
+    //  - wait for button to start
+    //  - read 10 green, run average
+    //  - populate limiarRGB_Yellow array
+    
+    //  - wait for button to start
+    //  - read 10 red, run average
+    //  - populate limiarRGB_Yellow array
+
+    writeCalibrationOnEPPROM();
 }
 
 void ColorSensor::readCalibration()
@@ -143,20 +156,16 @@ void ColorSensor::readCalibration()
 void ColorSensor::findNearest()
 {
     int errorAmplitude = 10;
-    if (this->red <= limiarRGB_Yellow[R] + errorAmplitude && this->red >= limiarRGB_Yellow[R] - errorAmplitude)
+    bool nearR_Yellow = this->red <= limiarRGB_Yellow[R] + errorAmplitude && this->red >= limiarRGB_Yellow[R] - errorAmplitude;
+    bool nearG_Yellow = this->green <= limiarRGB_Yellow[G] + errorAmplitude && this->red >= limiarRGB_Yellow[G] - errorAmplitude;
+    bool nearB_Yellow = this->blue <= limiarRGB_Yellow[B] + errorAmplitude && this->red >= limiarRGB_Yellow[B] - errorAmplitude;
+
+    if (nearR_Yellow && nearG_Yellow && nearB_Yellow )
     {
         strcpy(this->currentColor, "yellow");
     }
-    else if (this->red <= limiarRGB_Green[R] + errorAmplitude && this->red >= limiarRGB_Green[R] - errorAmplitude)
-    {
-        strcpy(this->currentColor, "green");
-    }
-    else if (this->red <= limiarRGB_Red[R] + errorAmplitude && this->red >= limiarRGB_Red[R] - errorAmplitude)
-    {
-        strcpy(this->currentColor, "red");
-    }
     else
     {
-        strcpy(this->currentColor, "red");
+        strcpy(this->currentColor, "green");
     }
 }
