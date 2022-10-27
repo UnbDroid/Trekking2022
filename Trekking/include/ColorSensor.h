@@ -31,6 +31,9 @@ private:
     int ColorSensorS2;
     int ColorSensorS3;
     int ColorSensorOut;
+
+    void openAndWriteFile();
+    void fetchCalibrationFromEPPROM();
 };
 
 #endif

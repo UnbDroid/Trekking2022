@@ -7,9 +7,52 @@
 #include <ColorSensor.h>
 #include <string.h>
 
+#include <EEPROM.h>
+
 #define R 0
 #define G 1
 #define B 2
+
+#define addressYellowR 0
+#define addressYellowG 1
+#define addressYellowB 2
+
+#define addressGreenR 3
+#define addressGreenG 4
+#define addressGreenB 5
+
+#define addressRedR 6
+#define addressRedG 7
+#define addressRedB 8
+
+void ColorSensor::fetchCalibrationFromEPPROM() {  
+  this->limiarRGB_Yellow[R]= EEPROM.read(addressYellowR);
+  this->limiarRGB_Yellow[G]= EEPROM.read(addressYellowG);
+  this->limiarRGB_Yellow[B]= EEPROM.read(addressYellowB);
+
+  this->limiarRGB_Green[R]= EEPROM.read(addressGreenR);
+  this->limiarRGB_Green[G]= EEPROM.read(addressGreenG);
+  this->limiarRGB_Green[B]= EEPROM.read(addressGreenB);
+  
+  this->limiarRGB_Red[R]= EEPROM.read(addressRedR);
+  this->limiarRGB_Red[G]= EEPROM.read(addressRedG);
+  this->limiarRGB_Red[B]= EEPROM.read(addressRedB);
+}
+
+void ColorSensor::openAndWriteFile() {
+  EEPROM.write(addressYellowR, 28);
+  EEPROM.write(addressYellowG, 43);
+  EEPROM.write(addressYellowB, 48);
+
+  EEPROM.write(addressGreenR, 112);
+  EEPROM.write(addressGreenG, 78);
+  EEPROM.write(addressGreenB, 86);
+  
+  EEPROM.write(addressRedR, 33);
+  EEPROM.write(addressRedG, 84);
+  EEPROM.write(addressRedB, 66);
+}
+
 
 ColorSensor::ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2, int ColorSensorS3, int ColorSensorOut)
 {
@@ -28,6 +71,8 @@ ColorSensor::ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2
     // Configura a escala de frequência para 20%
     digitalWrite(ColorSensorS0, HIGH);
     digitalWrite(ColorSensorS1, LOW);
+
+    this->fetchCalibrationFromEPPROM();
 }
 
 void ColorSensor::readColor()
