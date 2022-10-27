@@ -25,34 +25,35 @@
 #define addressRedG 7
 #define addressRedB 8
 
-void ColorSensor::fetchCalibrationFromEPPROM() {  
-  this->limiarRGB_Yellow[R]= EEPROM.read(addressYellowR);
-  this->limiarRGB_Yellow[G]= EEPROM.read(addressYellowG);
-  this->limiarRGB_Yellow[B]= EEPROM.read(addressYellowB);
+void ColorSensor::fetchCalibrationFromEPPROM()
+{
+    this->limiarRGB_Yellow[R] = EEPROM.read(addressYellowR);
+    this->limiarRGB_Yellow[G] = EEPROM.read(addressYellowG);
+    this->limiarRGB_Yellow[B] = EEPROM.read(addressYellowB);
 
-  this->limiarRGB_Green[R]= EEPROM.read(addressGreenR);
-  this->limiarRGB_Green[G]= EEPROM.read(addressGreenG);
-  this->limiarRGB_Green[B]= EEPROM.read(addressGreenB);
-  
-  this->limiarRGB_Red[R]= EEPROM.read(addressRedR);
-  this->limiarRGB_Red[G]= EEPROM.read(addressRedG);
-  this->limiarRGB_Red[B]= EEPROM.read(addressRedB);
+    this->limiarRGB_Green[R] = EEPROM.read(addressGreenR);
+    this->limiarRGB_Green[G] = EEPROM.read(addressGreenG);
+    this->limiarRGB_Green[B] = EEPROM.read(addressGreenB);
+
+    this->limiarRGB_Red[R] = EEPROM.read(addressRedR);
+    this->limiarRGB_Red[G] = EEPROM.read(addressRedG);
+    this->limiarRGB_Red[B] = EEPROM.read(addressRedB);
 }
 
-void ColorSensor::openAndWriteFile() {
-  EEPROM.write(addressYellowR, 28);
-  EEPROM.write(addressYellowG, 43);
-  EEPROM.write(addressYellowB, 48);
+void ColorSensor::writeCalibrationOnEPPROM()
+{
+    EEPROM.write(addressYellowR, this->limiarRGB_Yellow[R]);
+    EEPROM.write(addressYellowG, this->limiarRGB_Yellow[G]);
+    EEPROM.write(addressYellowB, this->limiarRGB_Yellow[B]);
 
-  EEPROM.write(addressGreenR, 112);
-  EEPROM.write(addressGreenG, 78);
-  EEPROM.write(addressGreenB, 86);
-  
-  EEPROM.write(addressRedR, 33);
-  EEPROM.write(addressRedG, 84);
-  EEPROM.write(addressRedB, 66);
+    EEPROM.write(addressGreenR, this->limiarRGB_Green[R]);
+    EEPROM.write(addressGreenG, this->limiarRGB_Green[G]);
+    EEPROM.write(addressGreenB, this->limiarRGB_Green[B]);
+
+    EEPROM.write(addressRedR, this->limiarRGB_Red[R]);
+    EEPROM.write(addressRedG, this->limiarRGB_Red[G]);
+    EEPROM.write(addressRedB, this->limiarRGB_Red[B]);
 }
-
 
 ColorSensor::ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2, int ColorSensorS3, int ColorSensorOut)
 {
@@ -106,55 +107,56 @@ void ColorSensor::readColor()
 
     // save in file
     this->readCalibration();
-    
+    this->findNearest();
 }
 
-void ColorSensor::calibrate() {
-    
+void ColorSensor::calibrate()
+{
+    // TODO
 }
 
-void ColorSensor::readCalibration() {
+void ColorSensor::readCalibration()
+{
     Serial.print("Yellow Calibration");
     char string2[1024];
     sprintf(string2, "RGB [%d] [%d] [%d]",
-        this->limiarRGB_Yellow[0], 
-        this->limiarRGB_Yellow[1], 
-        this->limiarRGB_Yellow[2]
-    );
+            this->limiarRGB_Yellow[0],
+            this->limiarRGB_Yellow[1],
+            this->limiarRGB_Yellow[2]);
     Serial.println(string2);
 
     Serial.print("Green Calibration");
     sprintf(string2, "RGB [%d] [%d] [%d]",
-        this->limiarRGB_Green[0], 
-        this->limiarRGB_Green[1], 
-        this->limiarRGB_Green[2]
-    ); 
+            this->limiarRGB_Green[0],
+            this->limiarRGB_Green[1],
+            this->limiarRGB_Green[2]);
     Serial.println(string2);
 
     Serial.print("Red Calibration");
     sprintf(string2, "RGB [%d] [%d] [%d]",
-        this->limiarRGB_Red[0], 
-        this->limiarRGB_Red[1], 
-        this->limiarRGB_Red[2] 
-    );
+            this->limiarRGB_Red[0],
+            this->limiarRGB_Red[1],
+            this->limiarRGB_Red[2]);
     Serial.println(string2);
 }
 
-
-
-
-void ColorSensor::findNearest () {
-
+void ColorSensor::findNearest()
+{
     int errorAmplitude = 10;
-    if(this->red <= limiarRGB_Yellow[R]+errorAmplitude && this->red >= limiarRGB_Yellow[R]-errorAmplitude ) {
+    if (this->red <= limiarRGB_Yellow[R] + errorAmplitude && this->red >= limiarRGB_Yellow[R] - errorAmplitude)
+    {
         strcpy(this->currentColor, "yellow");
-    } else if(this->red <= limiarRGB_Green[R]+errorAmplitude && this->red >= limiarRGB_Green[R]-errorAmplitude ) {
+    }
+    else if (this->red <= limiarRGB_Green[R] + errorAmplitude && this->red >= limiarRGB_Green[R] - errorAmplitude)
+    {
         strcpy(this->currentColor, "green");
-    } else if(this->red <= limiarRGB_Red[R]+errorAmplitude && this->red >= limiarRGB_Red[R]-errorAmplitude ) {
-        strcpy(this->currentColor, "red");
-    } else {
-
+    }
+    else if (this->red <= limiarRGB_Red[R] + errorAmplitude && this->red >= limiarRGB_Red[R] - errorAmplitude)
+    {
         strcpy(this->currentColor, "red");
     }
-
+    else
+    {
+        strcpy(this->currentColor, "red");
+    }
 }
