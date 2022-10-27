@@ -56,21 +56,51 @@ void ColorSensor::readColor()
     // Lê a frequencia de saída do fotodiodo azul
     this->blue = pulseIn(ColorSensorOut, LOW);
 
-    char string[1024];
-    sprintf(string, "RGB [%d] [%d] [%d]", this->red, this->green, this->blue);
+    // char string[1024];
+    // sprintf(string, "RGB [%d] [%d] [%d]", this->red, this->green, this->blue);
 
-
-
-    Serial.println(string);
-
-    int limiarRGB_Yellow[3] = {28, 43, 48};
-    int limiarRGB_Green[3] = {112, 78, 86};
-    int limiarRGB_Red[3] = {33, 84, 66};
-    int errorAmplitude = 10;
-
-    //TODO implement binary space partitioning
     // save in file
+    this->readCalibration();
+    
+}
 
+void ColorSensor::calibrate() {
+    
+}
+
+void ColorSensor::readCalibration() {
+    Serial.print("Yellow Calibration");
+    char string2[1024];
+    sprintf(string2, "RGB [%d] [%d] [%d]",
+        this->limiarRGB_Yellow[0], 
+        this->limiarRGB_Yellow[1], 
+        this->limiarRGB_Yellow[2]
+    );
+    Serial.println(string2);
+
+    Serial.print("Green Calibration");
+    sprintf(string2, "RGB [%d] [%d] [%d]",
+        this->limiarRGB_Green[0], 
+        this->limiarRGB_Green[1], 
+        this->limiarRGB_Green[2]
+    ); 
+    Serial.println(string2);
+
+    Serial.print("Red Calibration");
+    sprintf(string2, "RGB [%d] [%d] [%d]",
+        this->limiarRGB_Red[0], 
+        this->limiarRGB_Red[1], 
+        this->limiarRGB_Red[2] 
+    );
+    Serial.println(string2);
+}
+
+
+
+
+void ColorSensor::findNearest () {
+
+    int errorAmplitude = 10;
     if(this->red <= limiarRGB_Yellow[R]+errorAmplitude && this->red >= limiarRGB_Yellow[R]-errorAmplitude ) {
         strcpy(this->currentColor, "yellow");
     } else if(this->red <= limiarRGB_Green[R]+errorAmplitude && this->red >= limiarRGB_Green[R]-errorAmplitude ) {
@@ -81,4 +111,5 @@ void ColorSensor::readColor()
 
         strcpy(this->currentColor, "red");
     }
+
 }
