@@ -62,7 +62,7 @@ class MotorDC
     int pinPwm;
     int pinEnc;
     int dir;
-    int maxPot = 60; // TODO: Verificar de fato qual a maxima potencia pra substituir aki
+    int maxPot = 200; // TODO: Verificar de fato qual a maxima potencia pra substituir aki
     long unsigned int encCount;
 
 

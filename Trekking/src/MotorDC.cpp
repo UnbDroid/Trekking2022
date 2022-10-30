@@ -39,8 +39,8 @@ void MotorDC::fwd(int pot){
     //Sentido de rotação do motor
     dir = 1;
 
-    digitalWrite(pinA, HIGH);
-    digitalWrite(pinB, LOW);
+    digitalWrite(pinA, LOW);
+    digitalWrite(pinB, HIGH);
     analogWrite(pinPwm, finalPot);
 
 }
@@ -53,8 +53,8 @@ void MotorDC::rev(int pot){
     }
     dir = -1;
 
-    digitalWrite(pinA, LOW);
-    digitalWrite(pinB, HIGH);
+    digitalWrite(pinA, HIGH);
+    digitalWrite(pinB, LOW);
     analogWrite(pinPwm, finalPot);
    
 }
@@ -65,8 +65,8 @@ void MotorDC::stop(){
 
     dir = 0;
 
-    digitalWrite(pinA, LOW);
-    digitalWrite(pinB, LOW);
+    digitalWrite(pinA, HIGH);
+    digitalWrite(pinB, HIGH);
 }
 
 //Função para incrementar contador de pulsos do encoder, de acordo com sentido de rotação do motor.
