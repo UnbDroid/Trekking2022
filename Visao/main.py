@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import time
 
 millis = lambda: int(round(time.time() * 1000))
@@ -142,7 +142,7 @@ def findCone(_imageSrc):
 	
 	return (moments["m10"]/moments["m00"])/num_columns
 
-
+"""
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(16, GPIO.OUT)
 GPIO.setup(18, GPIO.OUT)
@@ -151,22 +151,23 @@ GPIO.setup(24, GPIO.OUT)
 GPIO.setup(36, GPIO.OUT)
 GPIO.setup(38, GPIO.OUT)
 GPIO.setup(40, GPIO.OUT)
-
+"""
 # camera = cv2.VideoCapture(2)
 
 cams_test = 100
 for i in range(-1, cams_test):
     camera = cv2.VideoCapture(i)
-    test, frame = camera.read()
+    test1, frame = camera.read()
     print("i : "+str(i) + "// result: "+ str(test))
-    if test:
+    if test1:
         print("SUCCESSFULL!")
         break
 if not camera.isOpened():
 	print("Buh\n")
 	exit()
 
-#test(camera)
+getImage(camera)
+test(camera)
 for x in range(40):
 	image = getImage(camera)
 
@@ -182,7 +183,7 @@ while(True):
 	res = int(res)
 	print("\033[F\033[F\033[J")
 	print(res)
-    
+"""
 	GPIO.output(16, (res & (1 << 0)) >> 0)
 	GPIO.output(18, (res & (1 << 1)) >> 1)
 	GPIO.output(22, (res & (1 << 2)) >> 2)
@@ -190,7 +191,7 @@ while(True):
 	GPIO.output(36, (res & (1 << 3)) >> 3)
 	GPIO.output(38, (res & (1 << 3)) >> 3)
 	GPIO.output(40, (res & (1 << 3)) >> 3)
-
+"""
 
 """"
 float findCone(Mat img_original, float* accuracy)
