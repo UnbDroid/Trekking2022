@@ -41,6 +41,9 @@
 #define ColorSensorS3 24
 #define ColorSensorOut 37
 
+// Sensor luminoso -> sinal
+#define SinalLuminoso 53
+
 #define EIXO_X 0
 #define EIXO_Y 1
 #define EIXO_Z 2
