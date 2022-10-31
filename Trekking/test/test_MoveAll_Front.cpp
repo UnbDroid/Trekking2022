@@ -17,9 +17,11 @@ MotorDC motorLeft (pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
 
 void setup() {
     Serial.begin(9600);
+    moveAll(120, &motorLeft, &motorRight);
+    delay(1000);
 }
 
 
 void loop() {
-    moveAll(120, &motorLeft, &motorRight);
+
 }

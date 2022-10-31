@@ -11,8 +11,8 @@ int firstReading = true;
 int count = 0;
 int valueRef;
 
-MotorDC motorRight(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
-MotorDC motorLeft(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
+MotorDC motorRight(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
+MotorDC motorLeft(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
 
 Gyro *giroscopio = new Gyro();
 
@@ -28,7 +28,7 @@ int rightEncoderReading = motorRight.getCount();
 int leftEncoderReading = motorLeft.getCount();
 
 void incL()
-{   
+{
     motorLeft.encSignal();
 }
 
@@ -49,7 +49,6 @@ void setup()
     // Modo de medicao continuo
     Wire.write(0x00);
     Wire.endTransmission();
-
 
     uint8_t pin1Interrupt = digitalPinToInterrupt(pin1Enc);
     uint8_t pin2Interrupt = digitalPinToInterrupt(pin2Enc);

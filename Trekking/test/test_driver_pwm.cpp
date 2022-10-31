@@ -8,11 +8,10 @@
 #include <Wire.h>
 #include <defines.h>
 
-MotorDC motorRight(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
-MotorDC motorLeft(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
-
+MotorDC motorRight(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
+MotorDC motorLeft(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
 void incL()
-{   
+{
     motorLeft.encSignal();
 }
 
@@ -29,15 +28,15 @@ void setup()
 void loop()
 {
 
-    for(int i = 0; i < 100; i+= 10)
+    for (int i = 0; i < 100; i += 10)
     {
-        moveAll(100-i, &motorLeft, &motorRight);
-        delay(500);    
+        moveAll(100 - i, &motorLeft, &motorRight);
+        delay(500);
     }
-    
-    for(int i = 0; i < 100; i+= 10)
+
+    for (int i = 0; i < 100; i += 10)
     {
-        moveRevAll(100-i, &motorLeft, &motorRight);
-        delay(500);    
+        moveRevAll(100 - i, &motorLeft, &motorRight);
+        delay(500);
     }
 }

@@ -2,14 +2,6 @@
 #define SDA 21
 
 // Motor Direita
-#define pinEnable1 50
-
-#define pin1A 45
-#define pin1B 49
-#define pin1pwm 2
-#define pin1Enc 18
-
-// Motor Esquerda
 #define pinEnable2 52
 
 #define pin2A 47
@@ -17,6 +9,13 @@
 #define pin2pwm 3
 #define pin2Enc 19
 
+// Motor Esquerda
+#define pinEnable1 50
+
+#define pin1A 45
+#define pin1B 49
+#define pin1pwm 2
+#define pin1Enc 18
 
 // Ultrassom US1
 #define US1Echo 4

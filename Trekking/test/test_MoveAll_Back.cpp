@@ -12,9 +12,8 @@ int firstReading = true;
 int count = 0;
 int valueRef;
 
-MotorDC motorRight(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
-MotorDC motorLeft(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
-
+MotorDC motorRight(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
+MotorDC motorLeft(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
 void setup()
 {
     Serial.begin(9600);
