@@ -1,8 +1,5 @@
 #include<Gyro.h>
  
-//Endereco I2C do MPU6050
-const int MPU=0x68;  //pino aberto 0X68 , pino ligado em 3,3V 0x69
-
 int data[7];
 
 Gyro::Gyro(){
@@ -34,7 +31,7 @@ double Gyro::requestData(){
     double result = atan2(y,x);
 
     double gyroValue = result *(180/PI); 
-  
+    gyroValue+= 180;
     return gyroValue;
 }
 
