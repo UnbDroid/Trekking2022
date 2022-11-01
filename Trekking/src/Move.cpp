@@ -120,8 +120,7 @@ void ForwardCm(
     float *error,
     Gyro *giroscopio,
     long *powerRightL,
-    int valueRef
-  )
+    int valueRef)
 {
   // ------------------------------------------------------------------------------------------------
   // A funcao moveAllpidGyro nao funciona quando chama aqui dentro, ai pra testar a gente
@@ -243,15 +242,24 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
 
     long ang_final = ang_inicial - _degree;
 
+    // Serial.print("ang_final antes: ");
+    // Serial.println(ang_final);
+
     // Se estiver com um ângulo negativo e for para um ângulo final positivo(passa pelo +- 180º)
     if (ang_inicial < 0 && ang_final < -180)
     {
       ang_final += 360; // transforma o angulo final em positivo
       flag = true;
     }
+
+    // Serial.print("ang_final depois: ");
+    // Serial.println(ang_final);
+
     while (true)
     {
       ang_atual = giroscopio->requestData();
+      // Serial.print("ang_atual: ");
+      // Serial.println(ang_atual);
       // Se estiver com um ângulo negativo e for para um ângulo final positivo(passa pelo +- 180º)
       if (flag && ang_atual > 0 && ang_atual <= ang_final)
       {

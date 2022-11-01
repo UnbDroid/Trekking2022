@@ -79,15 +79,17 @@ double anguloFinal(int sentido, double valRef, double anguloDesejado)
   if (sentido == ESQUERDA)
   {
     anguloFinal = valRef + anguloDesejado;
-    if(anguloFinal > 360) {
+    if (anguloFinal > 360)
+    {
       anguloFinal -= 360;
     }
   }
   else
   {
     anguloFinal = valRef - anguloDesejado;
-    if(anguloFinal < 0) {
-      anguloFinal+=360;
+    if (anguloFinal < 0)
+    {
+      anguloFinal += 360;
     }
   }
   return anguloFinal;
@@ -108,8 +110,8 @@ void loop()
     motorLeft.rev(100);
     motorRight.fwd(100);
     double anguloF = anguloFinal(DIREITA, valueRef, 90);
-      Serial.print("AnguloDesejado = ");
-      Serial.println(anguloF);
+    Serial.print("AnguloDesejado = ");
+    Serial.println(anguloF);
     while (giroscopio->requestData() < anguloF)
     {
       double gyroValue = gyroTest();
