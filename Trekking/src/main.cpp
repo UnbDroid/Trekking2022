@@ -7,54 +7,123 @@
 #include <Wire.h>
 #include <defines.h>
 
-Ultrasonic ultrasonic1(US1Trigger, US1Echo);
-Ultrasonic ultrasonic2(US2Trigger, US2Echo);
-Ultrasonic ultrasonic3(US3Trigger, US3Echo);
-Ultrasonic ultrasonic4(US4Trigger, US4Echo);
+#define ESQUERDA 0
+#define DIREITA 1
 
-MotorDC motorRight (pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1); 
-MotorDC motorLeft (pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
+int firstReading = true;
+int count = 0;
+int valueRef;
+
+MotorDC motorRight(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
+MotorDC motorLeft(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
+
+Gyro *giroscopio = new Gyro();
+
+float soma = 0;
+float error[2];
+long powerRightL = 50;
+unsigned long tPrint;
+int x, y, z;
+
+int potencia = 40;
+int distanciaCm = 200;
+int rightEncoderReading = motorRight.getCount();
+int leftEncoderReading = motorLeft.getCount();
+
+void incL()
+{
+  motorLeft.encSignal();
+}
+
+void incR()
+{
+  motorRight.encSignal();
+}
+
 void setup()
 {
-    Serial.begin(9600);
+  Serial.begin(9600);
+
+  Wire.begin();
+  // Inicializa o HMC5883
+  Wire.beginTransmission(address);
+  // Seleciona o modo
+  Wire.write(0x02);
+  // Modo de medicao continuo
+  Wire.write(0x00);
+  Wire.endTransmission();
+
+  uint8_t pin1Interrupt = digitalPinToInterrupt(pin1Enc);
+  uint8_t pin2Interrupt = digitalPinToInterrupt(pin2Enc);
+
+  attachInterrupt(pin1Interrupt, incR, RISING); // VERIFICAR
+  attachInterrupt(pin2Interrupt, incL, RISING);
+  error[0] = 0;
+  error[1] = millis();
+
+  delay(2000);
+  tPrint = millis();
+}
+double gyroTest()
+{
+  double gyroValue = giroscopio->requestData();
+  // -----------------------------------------------------------------
+  Serial.print("gyroValue: ");
+  Serial.println(gyroValue);
+  return gyroValue;
+}
+
+double anguloFinal(int sentido, double valRef, double anguloDesejado)
+{
+  double anguloFinal = 0;
+  if (sentido == ESQUERDA)
+  {
+    anguloFinal = valRef + anguloDesejado;
+    if(anguloFinal > 360) {
+      anguloFinal -= 360;
+    }
+  }
+  else
+  {
+    anguloFinal = valRef - anguloDesejado;
+    if(anguloFinal < 0) {
+      anguloFinal+=360;
+    }
+  }
+  return anguloFinal;
 }
 
 void loop()
 {
-    // Le as informacoes do sensor, em cm e pol
-    float cm2Msec;
-    float cm3Msec;
-    float cm4Msec;
 
-    
-    long microsec2 = ultrasonic2.timing();
-    cm2Msec = ultrasonic2.convert(microsec2, Ultrasonic::CM);
- 
-    long microsec3 = ultrasonic3.timing();
-    cm3Msec = ultrasonic3.convert(microsec3, Ultrasonic::CM);
- 
-    long microsec4 = ultrasonic4.timing();
-    cm4Msec = ultrasonic4.convert(microsec4, Ultrasonic::CM);
- 
-    
-    Serial.print("\tUS2 cm: ");
-    Serial.print(cm2Msec);
-    
-    Serial.print("\tUS3 cm: ");
-    Serial.print(cm3Msec);
-    
-    Serial.print("\tUS4 cm: ");
-    Serial.print(cm4Msec);
-    
-    Serial.println(); 
-    if(cm3Msec < 40 || cm2Msec < 40 ||cm4Msec < 40 ) {
-      // moveAll(40, &motorLeft, &motorRight);
-      // delay(100);
-      stopAll(&motorLeft, &motorRight);
-    } else {
-      moveRevAll(40, &motorLeft, &motorRight);
+  // firstReading = false;
+  // Delay para começar
+
+  if (firstReading)
+  {
+    valueRef = giroscopio->requestData();
+    Serial.print("valueRef: ");
+    Serial.println(valueRef);
+    delay(2000);
+    motorLeft.rev(100);
+    motorRight.fwd(100);
+    double anguloF = anguloFinal(DIREITA, valueRef, 90);
+      Serial.print("AnguloDesejado = ");
+      Serial.println(anguloF);
+    while (giroscopio->requestData() < anguloF)
+    {
+      double gyroValue = gyroTest();
+      Serial.print("AnguloDesejado = ");
+      Serial.println(anguloF);
+
+      delay(1000);
     }
-    
+    stopAll(&motorLeft, &motorRight);
 
-    delay(500);
+    //   turnDegreesGyro2(100, 90, HORARIO, &motorLeft, &motorRight, giroscopio);
+    // turnDegrees(60, 90, HORARIO, &motorLeft, &motorRight);
+    firstReading = false;
+  }
+  delay(100);
+  // stopAll(&motorLeft, &motorRight);
 }
