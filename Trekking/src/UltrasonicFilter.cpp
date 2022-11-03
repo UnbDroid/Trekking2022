@@ -1,6 +1,4 @@
 #include <UltrasonicFilter.h>
-#include <ColorSensor.h>
-#include <string.h>
 
 // Swap two elements - Utility function
 void swap(float *a, float *b)
@@ -68,42 +66,57 @@ void quickSort(float arr[], int start, int end)
     quickSort(arr, p + 1, end);
 }
 
-float filter(Ultrasonic ultrasonic)
+float *filter(Ultrasonic ultrasonic1, Ultrasonic ultrasonic2, Ultrasonic ultrasonic3)
 {
+    static float result[3];
+
     // Leitura dos ultrassons e salvando nos vetores
-    long auxValue = ultrasonic.timing();
-    filtered_values2[filter_index] = ultrasonic.convert(auxValue, Ultrasonic::CM);
+    long auxValue = ultrasonic1.timing();
+    float auxReading1 = ultrasonic1.convert(auxValue, Ultrasonic::CM);
+    auxReading1 = auxReading1 > 100 ? 100 : auxReading1;
+    auxReading1 = auxReading1 < 0 ? 0 : auxReading1;
+    filtered_values1[filter_index] = auxReading1;
 
-    long auxValue = ultrasonic.timing();
-    filtered_values3[filter_index] = ultrasonic.convert(auxValue, Ultrasonic::CM);
+    long auxValue2 = ultrasonic2.timing();
+    float auxReading2 = ultrasonic2.convert(auxValue2, Ultrasonic::CM);
+    auxReading2 = auxReading2 > 100 ? 100 : auxReading2;
+    auxReading2 = auxReading2 < 0 ? 0 : auxReading2;
+    filtered_values2[filter_index] = auxReading2;
 
-    long auxValue = ultrasonic.timing();
-    filtered_values4[filter_index] = ultrasonic.convert(auxValue, Ultrasonic::CM);
-    filter_index = (filter_index + 1) % 5;
+    long auxValue3 = ultrasonic3.timing();
+    float auxReading3 = ultrasonic3.convert(auxValue3, Ultrasonic::CM);
+    auxReading3 = auxReading3 > 100 ? 100 : auxReading3;
+    auxReading3 = auxReading3 < 0 ? 0 : auxReading3;
+    filtered_values3[filter_index] = auxReading3;
+
+    // Atualiza o indice para a media movel
+    filter_index = (filter_index + 1) % NUM_OF_READINGS;
 
     // Passando os valores para o vetor que sera ordenado
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < NUM_OF_READINGS; i++)
     {
+        sorted_values1[i] = filtered_values1[i];
         sorted_values2[i] = filtered_values2[i];
         sorted_values3[i] = filtered_values3[i];
-        sorted_values4[i] = filtered_values4[i];
     }
 
     // Ordenando os vetores
-    quickSort(sorted_values2, 0, 4);
-    quickSort(sorted_values3, 0, 4);
-    quickSort(sorted_values4, 0, 4);
+    quickSort(sorted_values1, 0, NUM_OF_READINGS - 1);
+    quickSort(sorted_values2, 0, NUM_OF_READINGS - 1);
+    quickSort(sorted_values3, 0, NUM_OF_READINGS - 1);
 
-    sorted_values2[2];
-    sorted_values3[2];
-    sorted_values4[2];
-    
+    // Retorna um valor do meio dos vetores ordenados
+    result[0] = sorted_values1[2];
+    result[1] = sorted_values2[2];
+    result[2] = sorted_values3[2];
+
+    return result;
 
     // float filtered_values[NUM_OF_RESULTS];
     // float values[NUM_OF_READINGS];
 
     // // le os valores do ultrassom
-    
+
     // for (int i = 0; i < NUM_OF_READINGS; i++)
     // {
     //     long auxValue = ultrasonic.timing();
@@ -123,21 +136,4 @@ float filter(Ultrasonic ultrasonic)
     //     j++;
     // }
     // return filtered_values[0];
-}
-
-void printArray(float values[])
-{
-    char str_values[65];
-    // Inicializa a string vazia
-    strcpy(str_values, "");
-    for (int i = 0; i < NUM_OF_RESULTS; i++)
-    {
-        char aux[10];
-        // Converte o float para string
-        sprintf(aux, "%g", values[i]);
-        // Concatena os valores na string com um espaço e new line entre eles
-        strcat(str_values, aux);
-        strcat(str_values, " \n");
-    }
-    Serial.println(str_values);
 }
