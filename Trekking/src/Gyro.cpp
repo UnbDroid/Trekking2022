@@ -31,7 +31,7 @@ double Gyro::requestData()
     double result = atan2(y, x);
 
     double gyroValue = result * (180 / PI);
-    gyroValue += 180;
+    // gyroValue += 180;
     return gyroValue;
 }
 

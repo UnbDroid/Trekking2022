@@ -31,6 +31,8 @@ void moveRevAll(int potencia, MotorDC *motorLeft, MotorDC *motorRight);
 
 void stopAll(MotorDC *motorLeft, MotorDC *motorRight);
 
+void stop2(MotorDC *motorLeft, MotorDC *motorRight);
+
 /* Turn Clockwise
   Descricao: Gira no sentido horário.
   Parâmetros:

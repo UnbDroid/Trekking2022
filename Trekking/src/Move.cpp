@@ -2,7 +2,7 @@
 #include <Move.h>
 #include <math.h>
 
-#define kp 0.1
+#define kp 0.2
 #define ki 0.75
 
 /*Encoder
@@ -110,6 +110,20 @@ void stopAll(
   motorLeft->stop();
 }
 
+void stop2(
+    MotorDC *motorLeft,
+    MotorDC *motorRight)
+{
+  for (int i = 60; i > 0 ; i--)
+  {
+    Serial.print(i);
+    motorRight->fwd(i);
+    motorLeft->fwd(i);
+    delay(2);
+  }
+  stopAll(motorLeft,motorRight);
+}
+
 // Andar para frente uma certa distância.
 void ForwardCm(
     int _power,
@@ -158,11 +172,11 @@ void ForwardCm(
 // Função que gira o robô no sentido horário.
 void turnClockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight)
 {
-  stopAll(motorLeft, motorRight);
+  // stopAll(motorLeft, motorRight);
   motorLeft->fwd(_power);
   motorRight->rev(_power);
-  delay(120);
-  stopAll(motorLeft, motorRight);
+  // delay(120);
+  // stopAll(motorLeft, motorRight);
 }
 
 // Função que gira o robô no sentido antihorário.
@@ -258,8 +272,8 @@ void turnDegreesGyro2(int _power, long _degree, int _clock, MotorDC *motorLeft, 
     while (true)
     {
       ang_atual = giroscopio->requestData();
-      // Serial.print("ang_atual: ");
-      // Serial.println(ang_atual);
+      Serial.print("ang_atual: ");
+      Serial.println(ang_atual);
       // Se estiver com um ângulo negativo e for para um ângulo final positivo(passa pelo +- 180º)
       if (flag && ang_atual > 0 && ang_atual <= ang_final)
       {
@@ -380,8 +394,8 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
     *soma = -10 / ki;
   }
 
-  powerLeft = abs(_power);
-  powerRight = abs((*powerRightL)) - (error[0] * kp); //+ (*soma)*ki;
+  powerLeft = abs((*powerRightL)) + (error[0] * kp + (*soma));
+  powerRight = abs(_power); //+ (*soma)*ki;
   // Serial.print(" powerRight : ");
   // Serial.println(powerRight);
 
@@ -391,10 +405,10 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   powerRight = (powerRight < 0) ? 0 : powerRight;
 
   // TESTE
-  // Serial.print(" powerLeft : ");
-  // Serial.print(powerLeft);
-  // Serial.print(" powerRight : ");
-  // Serial.println(powerRight);
+  Serial.print(" powerLeft : ");
+  Serial.print(powerLeft);
+  Serial.print(" powerRight : ");
+  Serial.println(powerRight);
 
   motorLeft->fwd(powerLeft);
   motorRight->fwd(powerRight);
