@@ -114,14 +114,14 @@ void stop2(
     MotorDC *motorLeft,
     MotorDC *motorRight)
 {
-  for (int i = 60; i > 0 ; i--)
+  for (int i = 60; i > 0; i--)
   {
     Serial.print(i);
     motorRight->fwd(i);
     motorLeft->fwd(i);
     delay(2);
   }
-  stopAll(motorLeft,motorRight);
+  stopAll(motorLeft, motorRight);
 }
 
 // Andar para frente uma certa distância.
@@ -165,6 +165,37 @@ void ForwardCm(
     // Serial.println(move);
   }
   stopAll(motorLeft, motorRight);
+}
+
+void turnToDesiredAngleGyro(int _power, long _desiredDegree, MotorDC *motorLeft, MotorDC *motorRight, Gyro *giroscopio)
+{
+  int clock;
+  long ang_inicial = giroscopio->requestData();
+  long delta_ang = ang_inicial - _desiredDegree;
+
+  // Se estiver no 2 quadrante e for para o 3 quadrante
+  if ((ang_inicial >= 90 && ang_inicial <= 180) && (_desiredDegree <= -90 && _desiredDegree >= -180))
+  {
+    delta_ang -= 360;
+  }
+
+  // Se estiver no 3 quadrante e for para o 2 quadrante
+  if ((ang_inicial <= -90 && ang_inicial >= -180) && (_desiredDegree >= 90 && _desiredDegree <= 180))
+  {
+    delta_ang += 360;
+  }
+
+  if (delta_ang < 0)
+  {
+    clock = ANTIHORARIO;
+    delta_ang *= -1;
+  }
+  else
+  {
+    clock = HORARIO;
+  }
+
+  turnDegreesGyro2(_power, delta_ang, clock, motorLeft, motorRight, giroscopio);
 }
 
 // TODO All bellow

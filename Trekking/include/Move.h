@@ -79,6 +79,17 @@ void turnDegreesGyro(int _power, int _degrees, int _clock, MotorDC *motorLeft, M
 
 void turnDegreesGyro2(int _power, long _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight, Gyro *giroscopio);
 
+/* turnToDesiredAngleGyro
+  Descricao: Função que o David fez, gira em uma determinada direção, para um grau específico,
+  utilizando o giroscopio. A direção do giro será feita com base na menor distância entre o
+  ângulo atual e o ângulo desejado.
+  Parâmetros:
+    - _power: Potência desejada.
+    - _desiredDegree: Grau que se deseja que o robô esteja de frente para.
+*/
+
+void turnToDesiredAngleGyro(int _power, long _desiredDegree, MotorDC *motorLeft, MotorDC *motorRight, Gyro *giroscopio);
+
 /* Foward Cm
   Descricao: Anda para frente uma certa quantidade de centímetros.
   Parâmetros:
