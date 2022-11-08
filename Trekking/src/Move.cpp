@@ -405,10 +405,10 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   }
 
   // TESTE
-  // Serial.print(" gyroValue : ");
-  // Serial.print(gyroValue);
-  // Serial.print(" valueRef : ");
-  // Serial.print(valueRef);
+  Serial.print(" gyroValue : ");
+  Serial.print(gyroValue);
+  Serial.print(" valueRef : ");
+  Serial.print(valueRef);
   // Serial.print(" error[0] : ");
   // Serial.println(error[0]);
 
@@ -468,7 +468,7 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
   // }
 }
 
-void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, long gyroValue, long *powerRightL, float valueRef)
+void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef)
 {
   float powerLeft;
   float powerRight;
@@ -476,6 +476,8 @@ void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, floa
   float lastT = error[1];
   float lastE = error[0];
   float deltaT;
+
+  long gyroValue = giroscopio->requestData();
 
   // float valueRef = 0;
   /*if(gyroValue <= 12 && gyroValue >= -12)
@@ -486,6 +488,15 @@ void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, floa
   error[0] = (gyroValue - valueRef); // - giro; // diferença entre os encoderes sendo o error atual
   error[1] = millis();
   // Serial.println(error[0]);
+
+  // TESTE
+  Serial.print(" gyroValue : ");
+  Serial.print(gyroValue);
+  Serial.print(" valueRef : ");
+  Serial.print(valueRef);
+  Serial.print(" error[0] : ");
+  Serial.print(error[0]);
+
 
   deltaT = (error[1] - lastT) / 1000;
 
@@ -500,48 +511,53 @@ void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, floa
     *soma = -10 / ki;
   }
 
+  // powerLeft = abs((_power)) + (error[0] * kp);
   powerLeft = abs(_power);
-  powerRight = abs((*powerRightL)) + (error[0] * kp) + (*soma) * ki;
-  // Serial.println("LEFT");
-  // Serial.println(powerLeft);
-  // Serial.println("right");
-  // Serial.println(powerRight);
+  powerRight = abs((*powerRightL)) - (error[0] * kp);
+  // powerRight = abs((*powerRightL)) - ((error[0] * kp) + (*soma) * ki);
 
-  powerLeft = (powerLeft > 255) ? 255 : powerLeft;
-  powerRight = (powerRight > 255) ? 255 : powerRight;
-  powerLeft = (powerLeft < 0) ? 0 : powerLeft;
-  powerRight = (powerRight < 0) ? 0 : powerRight;
+  powerLeft = (powerLeft > 200) ? 200 : powerLeft;
+  powerRight = (powerRight > 200) ? 200 : powerRight;
+  powerLeft = (powerLeft < 50) ? 50 : powerLeft;
+  powerRight = (powerRight < 50) ? 50 : powerRight;
+
+  // TESTE
+  Serial.print(" powerLeft : ");
+  Serial.print(powerLeft);
+  Serial.print(" powerRight : ");
+  Serial.println(powerRight);
 
   motorLeft->fwd(powerLeft);
   motorRight->fwd(powerRight);
-  *powerRightL = powerRight;
+  *powerRightL = (powerRight < powerLeft * 0.4) ? *powerRightL : powerRight;
+  // *powerRightL = powerRight;
 
   // Quando a potência era negativa, adotamos que o robô andaria para trás
-  if (_power < 0)
-  {
+  // if (_power < 0)
+  // {
 
-    if ((error[1] - time1) > 3500)
-    {
-      motorLeft->rev(powerLeft);
-      motorRight->rev(powerRight);
-    }
-    else
-    {
-      motorLeft->rev(50);
-      motorRight->rev(50);
-    }
-  }
-  else
-  {
-    if ((error[1] - time1) > 3500)
-    {
-      motorLeft->fwd(powerLeft);
-      motorRight->fwd(powerRight);
-    }
-    else
-    {
-      motorLeft->fwd(50);
-      motorRight->fwd(50);
-    }
-  }
+  //   if ((error[1] - time1) > 3500)
+  //   {
+  //     motorLeft->rev(powerLeft);
+  //     motorRight->rev(powerRight);
+  //   }
+  //   else
+  //   {
+  //     motorLeft->rev(50);
+  //     motorRight->rev(50);
+  //   }
+  // }
+  // else
+  // {
+  //   if ((error[1] - time1) > 3500)
+  //   {
+  //     motorLeft->fwd(powerLeft);
+  //     motorRight->fwd(powerRight);
+  //   }
+  //   else
+  //   {
+  //     motorLeft->fwd(50);
+  //     motorRight->fwd(50);
+  //   }
+  // }
 }

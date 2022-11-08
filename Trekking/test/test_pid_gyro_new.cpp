@@ -18,7 +18,7 @@ Gyro *giroscopio = new Gyro();
 
 float soma = 0;
 float error[2];
-long powerRightL = 70;
+long powerRightL = 100;
 unsigned long tPrint;
 int x, y, z;
 
@@ -64,25 +64,18 @@ void setup()
 
 void loop()
 {
+
     // Delay para começar
     if (firstReading)
     {
-        firstReading = false;
         delay(1000);
+        valueRef = giroscopio->requestData();
+        Serial.print("valueRef: ");
+        Serial.println(valueRef);
+        delay(3000);
+        // ForwardCm(100, 700, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+        firstReading = false;
     }
-
-    moveAll(potencia, &motorLeft, &motorRight);
-    delay(1000);
-    stopAll(&motorLeft, &motorRight);
-
-    Serial.println("\n\nStopped moving\n\n");
-
-    rightEncoderReading = motorRight.getCount();
-    leftEncoderReading = motorLeft.getCount();
-
-    Serial.print("Right Encoder: ");
-    Serial.println(rightEncoderReading);
-    Serial.print("Left Encoder: ");
-    Serial.println(leftEncoderReading);
-    delay(1000);
+    moveAllpidGyroNew(150, &motorLeft, &motorRight, &soma, error, giroscopio, &powerRightL, valueRef);
+    // stopAll(&motorLeft, &motorRight);
 }

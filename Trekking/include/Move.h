@@ -110,4 +110,6 @@ void RevCm(int _power, int _distance, MotorDC *motorLeft, MotorDC *motorRight);
 
 void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef);
 
+void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef);
+
 #endif
