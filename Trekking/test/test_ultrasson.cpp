@@ -12,27 +12,22 @@ Ultrasonic ultrasonic2(US2Trigger, US2Echo);
 Ultrasonic ultrasonic3(US3Trigger, US3Echo);
 Ultrasonic ultrasonic4(US4Trigger, US4Echo);
 
-MotorDC motorRight (pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1); 
-MotorDC motorLeft (pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
 void setup()
 {
     Serial.begin(9600);
 }
 
-void loop() 
+void loop()
 {
     // Le as informacoes do sensor, em cm e pol
+    float cm1Msec;
     float cm2Msec;
     float cm3Msec;
     float cm4Msec;
 
-    while(true)
-    {
-        motorLeft.fwd(120);
-        motorRight.rev(120);
-    }
-
-    
+    long microsec1 = ultrasonic1.timing();
+    cm1Msec = ultrasonic1.convert(microsec1, Ultrasonic::CM);
+ 
     long microsec2 = ultrasonic2.timing();
     cm2Msec = ultrasonic2.convert(microsec2, Ultrasonic::CM);
  
@@ -42,6 +37,10 @@ void loop()
     long microsec4 = ultrasonic4.timing();
     cm4Msec = ultrasonic4.convert(microsec4, Ultrasonic::CM);
  
+
+    // Exibe informacoes no serial monitor
+    Serial.print("US1 cm: ");
+    Serial.print(cm1Msec);
     
     Serial.print("\tUS2 cm: ");
     Serial.print(cm2Msec);
@@ -52,15 +51,7 @@ void loop()
     Serial.print("\tUS4 cm: ");
     Serial.print(cm4Msec);
     
-    Serial.println(); 
-    if(cm3Msec < 40 || cm2Msec < 40 ||cm4Msec < 40 ) {
-      // moveAll(40, &motorLeft, &motorRight);
-      // delay(100);
-      stopAll(&motorLeft, &motorRight);
-    } else {
-      moveRevAll(40, &motorLeft, &motorRight);
-    }
-    
+    Serial.println();
 
     delay(500);
 }

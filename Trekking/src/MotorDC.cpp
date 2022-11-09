@@ -32,24 +32,31 @@ MotorDC::~MotorDC(){}
 
 //Função que anda para frente.
 void MotorDC::fwd(int pot){
-
+    int finalPot = pot;
+    if(pot > this->maxPot) {
+        finalPot = this->maxPot;
+        Serial.println("Acima do valor máximo");
+    }
     //Sentido de rotação do motor
     dir = 1;
 
     digitalWrite(pinA, HIGH);
     digitalWrite(pinB, LOW);
-    analogWrite(pinPwm, pot);
+    analogWrite(pinPwm, finalPot);
 
 }
 
 //Função que anda para trás.
 void MotorDC::rev(int pot){
-
+    int finalPot = pot;
+    if(pot > this->maxPot) {
+        finalPot = this->maxPot;
+    }
     dir = -1;
 
     digitalWrite(pinA, LOW);
     digitalWrite(pinB, HIGH);
-    analogWrite(pinPwm, pot);
+    analogWrite(pinPwm, finalPot);
    
 }
 

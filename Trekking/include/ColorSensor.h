@@ -11,26 +11,24 @@
 
 class ColorSensor
 {
-    public:
-
+public:
     int red = 0;
     int green = 0;
     int blue = 0;
     char currentColor[7] = "";
 
-    ColorSensor(int pinColorS0, int pinColorS1, int pinColorS2, int pinColorS3, int pinColorOut);
+    ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2, int ColorSensorS3, int ColorSensorOut);
 
     ~ColorSensor();
 
     void readColor();
 
-    private:
-
-    int pinColorS0;
-    int pinColorS1;
-    int pinColorS2;
-    int pinColorS3;
-    int pinColorOut;
+private:
+    int ColorSensorS0;
+    int ColorSensorS1;
+    int ColorSensorS2;
+    int ColorSensorS3;
+    int ColorSensorOut;
 };
 
 #endif
