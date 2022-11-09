@@ -26,6 +26,12 @@ void loop()
     float cm3Msec;
     float cm4Msec;
 
+    while(true)
+    {
+        motorLeft.fwd(120);
+        motorRight.rev(120);
+    }
+
     
     long microsec2 = ultrasonic2.timing();
     cm2Msec = ultrasonic2.convert(microsec2, Ultrasonic::CM);
