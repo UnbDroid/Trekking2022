@@ -66,7 +66,7 @@ void setup()
     tPrint = millis();
 }
 
-void loop()
+void loop() 
 {
     // Delay para começar
     if (firstReading)

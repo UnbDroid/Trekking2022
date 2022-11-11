@@ -35,6 +35,7 @@ void MotorDC::fwd(int pot){
     int finalPot = pot;
     if(pot > this->maxPot) {
         finalPot = this->maxPot;
+        Serial.println("Acima do valor máximo");
     }
     //Sentido de rotação do motor
     dir = 1;
