@@ -62,6 +62,7 @@ void setup()
     tPrint = millis();
 }
 
+
 void loop()
 {
     // Delay para começar

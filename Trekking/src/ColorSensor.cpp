@@ -7,9 +7,57 @@
 #include <ColorSensor.h>
 #include <string.h>
 
+#include <EEPROM.h>
+
 #define R 0
 #define G 1
 #define B 2
+
+#define YELLOW 0
+#define GREEN 1
+#define RED 2
+
+#define addressYellowR 0
+#define addressYellowG 1
+#define addressYellowB 2
+
+#define addressGreenR 3
+#define addressGreenG 4
+#define addressGreenB 5
+
+#define addressRedR 6
+#define addressRedG 7
+#define addressRedB 8
+
+void ColorSensor::fetchCalibrationFromEPPROM()
+{
+    this->limiarRGB_Yellow[R] = EEPROM.read(addressYellowR);
+    this->limiarRGB_Yellow[G] = EEPROM.read(addressYellowG);
+    this->limiarRGB_Yellow[B] = EEPROM.read(addressYellowB);
+
+    this->limiarRGB_Green[R] = EEPROM.read(addressGreenR);
+    this->limiarRGB_Green[G] = EEPROM.read(addressGreenG);
+    this->limiarRGB_Green[B] = EEPROM.read(addressGreenB);
+
+    this->limiarRGB_Red[R] = EEPROM.read(addressRedR);
+    this->limiarRGB_Red[G] = EEPROM.read(addressRedG);
+    this->limiarRGB_Red[B] = EEPROM.read(addressRedB);
+}
+
+void ColorSensor::writeCalibrationOnEPPROM()
+{
+    EEPROM.write(addressYellowR, this->limiarRGB_Yellow[R]);
+    EEPROM.write(addressYellowG, this->limiarRGB_Yellow[G]);
+    EEPROM.write(addressYellowB, this->limiarRGB_Yellow[B]);
+
+    EEPROM.write(addressGreenR, this->limiarRGB_Green[R]);
+    EEPROM.write(addressGreenG, this->limiarRGB_Green[G]);
+    EEPROM.write(addressGreenB, this->limiarRGB_Green[B]);
+
+    EEPROM.write(addressRedR, this->limiarRGB_Red[R]);
+    EEPROM.write(addressRedG, this->limiarRGB_Red[G]);
+    EEPROM.write(addressRedB, this->limiarRGB_Red[B]);
+}
 
 ColorSensor::ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2, int ColorSensorS3, int ColorSensorOut)
 {
@@ -28,6 +76,8 @@ ColorSensor::ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2
     // Configura a escala de frequência para 20%
     digitalWrite(ColorSensorS0, HIGH);
     digitalWrite(ColorSensorS1, LOW);
+
+    this->fetchCalibrationFromEPPROM();
 }
 
 void ColorSensor::readColor()
@@ -56,29 +106,112 @@ void ColorSensor::readColor()
     // Lê a frequencia de saída do fotodiodo azul
     this->blue = pulseIn(ColorSensorOut, LOW);
 
-    char string[1024];
-    sprintf(string, "RGB [%d] [%d] [%d]", this->red, this->green, this->blue);
+    // char string[1024];
+    // sprintf(string, "RGB [%d] [%d] [%d]", this->red, this->green, this->blue);
 
-
-
-    Serial.println(string);
-
-    int limiarRGB_Yellow[3] = {28, 43, 48};
-    int limiarRGB_Green[3] = {112, 78, 86};
-    int limiarRGB_Red[3] = {33, 84, 66};
-    int errorAmplitude = 10;
-
-    //TODO implement binary space partitioning
     // save in file
+    this->readCalibration();
+    this->findNearest();
+}
 
-    if(this->red <= limiarRGB_Yellow[R]+errorAmplitude && this->red >= limiarRGB_Yellow[R]-errorAmplitude ) {
+
+int ColorSensor::getAverageNReadings(int N, int color) {
+    int finalReading = 0;
+    int averageR = 0;
+    int averageG = 0;
+    int averageB = 0;
+    for(int i = 0; i < N; i++) {
+        averageR+=this->red;
+        averageG+=this->green;
+        averageB+=this->blue;
+        delay(200);
+    }
+    averageR/=N;
+    averageB/=N;
+    averageG/=N;
+    
+    switch(color) {
+        case YELLOW:
+            this->limiarRGB_Yellow[R] = averageR;
+            this->limiarRGB_Yellow[G] = averageG;
+            this->limiarRGB_Yellow[B] = averageB;
+            break;
+
+        case GREEN:
+            this->limiarRGB_Green[R] = averageR;
+            this->limiarRGB_Green[G] = averageG;
+            this->limiarRGB_Green[B] = averageB;
+            break;
+        
+        case RED:
+            this->limiarRGB_Red[R] = averageR;
+            this->limiarRGB_Red[G] = averageG;
+            this->limiarRGB_Red[B] = averageB;
+            break;
+        default:
+            break;
+    }
+}
+
+void ColorSensor::calibrate()
+{
+
+    Serial.println("Coloque no marco Amarelo e aperte o botão");
+    while (!digitalRead(BUTTON_DEBUG)) {
+    }
+    this->getAverageNReadings(10, YELLOW);
+
+    Serial.println("Calibrou Amarelo, agora Verde");
+    while (!digitalRead(BUTTON_DEBUG)) {
+    }
+    this->getAverageNReadings(10, GREEN);
+    
+    Serial.println("Calibrou Verde, agora Vermelho/Qualquer outra coisa");
+    while (!digitalRead(BUTTON_DEBUG)) {
+    }
+    this->getAverageNReadings(10, RED);
+
+    writeCalibrationOnEPPROM();
+}
+
+void ColorSensor::readCalibration()
+{
+    Serial.print("Yellow Calibration");
+    char string2[1024];
+    sprintf(string2, "RGB [%d] [%d] [%d]",
+            this->limiarRGB_Yellow[R],
+            this->limiarRGB_Yellow[G],
+            this->limiarRGB_Yellow[B]);
+    Serial.println(string2);
+
+    Serial.print("Green Calibration");
+    sprintf(string2, "RGB [%d] [%d] [%d]",
+            this->limiarRGB_Green[R],
+            this->limiarRGB_Green[G],
+            this->limiarRGB_Green[B]);
+    Serial.println(string2);
+
+    Serial.print("Red Calibration");
+    sprintf(string2, "RGB [%d] [%d] [%d]",
+            this->limiarRGB_Red[R],
+            this->limiarRGB_Red[G],
+            this->limiarRGB_Red[B]);
+    Serial.println(string2);
+}
+
+void ColorSensor::findNearest()
+{
+    int errorAmplitude = 10;
+    bool nearR_Yellow = this->red <= limiarRGB_Yellow[R] + errorAmplitude && this->red >= limiarRGB_Yellow[R] - errorAmplitude;
+    bool nearG_Yellow = this->green <= limiarRGB_Yellow[G] + errorAmplitude && this->red >= limiarRGB_Yellow[G] - errorAmplitude;
+    bool nearB_Yellow = this->blue <= limiarRGB_Yellow[B] + errorAmplitude && this->red >= limiarRGB_Yellow[B] - errorAmplitude;
+
+    if (nearR_Yellow && nearG_Yellow && nearB_Yellow )
+    {
         strcpy(this->currentColor, "yellow");
-    } else if(this->red <= limiarRGB_Green[R]+errorAmplitude && this->red >= limiarRGB_Green[R]-errorAmplitude ) {
+    }
+    else
+    {
         strcpy(this->currentColor, "green");
-    } else if(this->red <= limiarRGB_Red[R]+errorAmplitude && this->red >= limiarRGB_Red[R]-errorAmplitude ) {
-        strcpy(this->currentColor, "red");
-    } else {
-
-        strcpy(this->currentColor, "red");
     }
 }
