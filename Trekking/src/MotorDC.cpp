@@ -65,8 +65,8 @@ void MotorDC::stop(){
 
     dir = 0;
 
-    digitalWrite(pinA, LOW);
-    digitalWrite(pinB, LOW);
+    digitalWrite(pinA, HIGH);
+    digitalWrite(pinB, HIGH);
 }
 
 //Função para incrementar contador de pulsos do encoder, de acordo com sentido de rotação do motor.

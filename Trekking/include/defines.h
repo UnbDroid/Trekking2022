@@ -1,37 +1,47 @@
+#define SCL 20
+#define SDA 21
 
 // Motor Direita
-#define pin1A 3
-#define pin1B 7
-#define pin1pwm 8
-#define pin1Enc A0
+#define pinEnable2 52
+
+#define pin2A 47
+#define pin2B 43
+#define pin2pwm 3
+#define pin2Enc 19
 
 // Motor Esquerda
-#define pin2A 6
-#define pin2B 2
-#define pin2pwm 9
-#define pin2Enc A1
+#define pinEnable1 50
 
-#define pinEnable1 14
-#define pinEnable2 15
+#define pin1A 45
+#define pin1B 49
+#define pin1pwm 2
+#define pin1Enc 18
 
-//Ultrassom Frente
-#define pinFrontTrigger 52
-#define pinFrontEcho 53
+// Ultrassom US1
+#define US1Echo 4
+#define US1Trigger 5
 
-//Ultrassom Esquerda
-#define pinLeftTrigger 50
-#define pinLeftEcho 51
+// Ultrassom US2
+#define US2Echo 6
+#define US2Trigger 7
 
-//Ultrassom Direita
-#define pinRightTrigger 48
-#define pinRightEcho 49
+// Ultrassom US3
+#define US3Echo 10
+#define US3Trigger 11
+
+// Ultrassom US4
+#define US4Echo 13
+#define US4Trigger 12
 
 // Sensor de cor
-#define pinColorS0 4 // A DEFINIR
-#define pinColorS1 5 // A DEFINIR
-#define pinColorS2 6 // A DEFINIR
-#define pinColorS3 7 // A DEFINIR
-#define pinColorOut 8 // A DEFINIR
+#define ColorSensorS0 39
+#define ColorSensorS1 41
+#define ColorSensorS2 22
+#define ColorSensorS3 24
+#define ColorSensorOut 37
+
+// Sensor luminoso -> sinal
+#define SinalLuminoso 53
 
 #define EIXO_X 0
 #define EIXO_Y 1
