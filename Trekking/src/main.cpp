@@ -6,6 +6,7 @@
 #include <Gyro.h>
 #include <Wire.h>
 #include <defines.h>
+#include <VisionSensor.h>
 
 int firstReading = true;
 int count = 0;
@@ -13,6 +14,8 @@ int valueRef;
 
 MotorDC motorRight(pin2A, pin2B, pin2pwm, pin2Enc, pinEnable2);
 MotorDC motorLeft(pin1A, pin1B, pin1pwm, pin1Enc, pinEnable1);
+
+VisionSensor camera(VISION_START);
 
 Gyro *giroscopio = new Gyro();
 
@@ -22,10 +25,11 @@ long powerRightL = 70;
 unsigned long tPrint;
 int x, y, z;
 
-int potencia = 40;
+int potencia = 120;
 int distanciaCm = 200;
 int rightEncoderReading = motorRight.getCount();
 int leftEncoderReading = motorLeft.getCount();
+int cameraAngle = 90;
 
 void incL()
 {
@@ -71,9 +75,41 @@ void loop()
         delay(1000);
     }
 
-    moveAll(potencia, &motorLeft, &motorRight);
-    delay(1000);
+    //moveAll(potencia, &motorLeft, &motorRight);
+    motorLeft.fwd(potencia+20);
+    motorRight.rev(potencia+20);
+    delay(32000);
+    motorLeft.fwd(potencia);
+    motorRight.fwd(potencia);
+    Serial.println("Move\n");
+    delay(2000);
+    Serial.println("Move stop\n");
+    motorLeft.fwd(potencia);
+    motorRight.fwd(potencia-100);
+    delay(80000);
+
     stopAll(&motorLeft, &motorRight);
+    
+    while(true)
+    {
+        cameraAngle = camera.getFilteredAngle();
+        Serial.println(cameraAngle);
+        if(cameraAngle > 100)
+        {
+            motorLeft.fwd(potencia);
+            motorRight.fwd(potencia-20);
+        }
+        else if(cameraAngle < 80)
+        {
+            motorLeft.fwd(potencia-20);
+            motorRight.fwd(potencia);
+        }
+        else
+        {
+            motorLeft.fwd(potencia);
+            motorRight.fwd(potencia);
+        }
+    }
 
     Serial.println("\n\nStopped moving\n\n");
 
