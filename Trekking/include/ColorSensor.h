@@ -23,6 +23,7 @@ public:
     void findNearest();
     void calibrate();
     void readCalibration();
+    int getAverageNReadings(int N, int color);
 
 private:
     int ColorSensorS0;

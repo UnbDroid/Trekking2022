@@ -46,3 +46,5 @@
 #define EIXO_X 0
 #define EIXO_Y 1
 #define EIXO_Z 2
+
+#define BUTTON_DEBUG 33

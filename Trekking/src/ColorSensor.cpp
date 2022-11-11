@@ -13,6 +13,10 @@
 #define G 1
 #define B 2
 
+#define YELLOW 0
+#define GREEN 1
+#define RED 2
+
 #define addressYellowR 0
 #define addressYellowG 1
 #define addressYellowB 2
@@ -110,20 +114,62 @@ void ColorSensor::readColor()
     this->findNearest();
 }
 
+
+int ColorSensor::getAverageNReadings(int N, int color) {
+    int finalReading = 0;
+    int averageR = 0;
+    int averageG = 0;
+    int averageB = 0;
+    for(int i = 0; i < N; i++) {
+        averageR+=this->red;
+        averageG+=this->green;
+        averageB+=this->blue;
+        delay(200);
+    }
+    averageR/=N;
+    averageB/=N;
+    averageG/=N;
+    
+    switch(color) {
+        case YELLOW:
+            this->limiarRGB_Yellow[R] = averageR;
+            this->limiarRGB_Yellow[G] = averageG;
+            this->limiarRGB_Yellow[B] = averageB;
+            break;
+
+        case GREEN:
+            this->limiarRGB_Green[R] = averageR;
+            this->limiarRGB_Green[G] = averageG;
+            this->limiarRGB_Green[B] = averageB;
+            break;
+        
+        case RED:
+            this->limiarRGB_Red[R] = averageR;
+            this->limiarRGB_Red[G] = averageG;
+            this->limiarRGB_Red[B] = averageB;
+            break;
+        default:
+            break;
+    }
+}
+
 void ColorSensor::calibrate()
 {
-    // TODO
-    //  - wait for button to start
-    //  - read 10 yellow, run average
-    //  - populate limiarRGB_Yellow array
 
-    //  - wait for button to start
-    //  - read 10 green, run average
-    //  - populate limiarRGB_Yellow array
+    Serial.println("Coloque no marco Amarelo e aperte o botão");
+    while (!digitalRead(BUTTON_DEBUG)) {
+    }
+    this->getAverageNReadings(10, YELLOW);
+
+    Serial.println("Calibrou Amarelo, agora Verde");
+    while (!digitalRead(BUTTON_DEBUG)) {
+    }
+    this->getAverageNReadings(10, GREEN);
     
-    //  - wait for button to start
-    //  - read 10 red, run average
-    //  - populate limiarRGB_Yellow array
+    Serial.println("Calibrou Verde, agora Vermelho/Qualquer outra coisa");
+    while (!digitalRead(BUTTON_DEBUG)) {
+    }
+    this->getAverageNReadings(10, RED);
 
     writeCalibrationOnEPPROM();
 }
@@ -133,23 +179,23 @@ void ColorSensor::readCalibration()
     Serial.print("Yellow Calibration");
     char string2[1024];
     sprintf(string2, "RGB [%d] [%d] [%d]",
-            this->limiarRGB_Yellow[0],
-            this->limiarRGB_Yellow[1],
-            this->limiarRGB_Yellow[2]);
+            this->limiarRGB_Yellow[R],
+            this->limiarRGB_Yellow[G],
+            this->limiarRGB_Yellow[B]);
     Serial.println(string2);
 
     Serial.print("Green Calibration");
     sprintf(string2, "RGB [%d] [%d] [%d]",
-            this->limiarRGB_Green[0],
-            this->limiarRGB_Green[1],
-            this->limiarRGB_Green[2]);
+            this->limiarRGB_Green[R],
+            this->limiarRGB_Green[G],
+            this->limiarRGB_Green[B]);
     Serial.println(string2);
 
     Serial.print("Red Calibration");
     sprintf(string2, "RGB [%d] [%d] [%d]",
-            this->limiarRGB_Red[0],
-            this->limiarRGB_Red[1],
-            this->limiarRGB_Red[2]);
+            this->limiarRGB_Red[R],
+            this->limiarRGB_Red[G],
+            this->limiarRGB_Red[B]);
     Serial.println(string2);
 }
 
