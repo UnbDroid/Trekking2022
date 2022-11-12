@@ -38,10 +38,10 @@
 #define ColorSensorS1 41
 #define ColorSensorS2 22
 #define ColorSensorS3 24
-#define ColorSensorOut 37
+#define ColorSensorOut 51
 
 // Sensor luminoso -> sinal
-#define SinalLuminoso 53
+#define SinalLuminoso 40
 
 #define EIXO_X 0
 #define EIXO_Y 1

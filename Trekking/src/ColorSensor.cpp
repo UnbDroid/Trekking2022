@@ -63,7 +63,7 @@ void ColorSensor::readColor()
 
     Serial.println(string);
 
-    int limiarRGB_Yellow[3] = {28, 43, 48};
+    int limiarRGB_Yellow[3] = {200, 200, 250};
     int limiarRGB_Green[3] = {112, 78, 86};
     int limiarRGB_Red[3] = {33, 84, 66};
     int errorAmplitude = 10;
@@ -71,14 +71,9 @@ void ColorSensor::readColor()
     //TODO implement binary space partitioning
     // save in file
 
-    if(this->red <= limiarRGB_Yellow[R]+errorAmplitude && this->red >= limiarRGB_Yellow[R]-errorAmplitude ) {
+    if(this->red <= limiarRGB_Yellow[R]+errorAmplitude && this->red <= limiarRGB_Yellow[G]+errorAmplitude && this->red <= limiarRGB_Yellow[B]+errorAmplitude ) {
         strcpy(this->currentColor, "yellow");
-    } else if(this->red <= limiarRGB_Green[R]+errorAmplitude && this->red >= limiarRGB_Green[R]-errorAmplitude ) {
-        strcpy(this->currentColor, "green");
-    } else if(this->red <= limiarRGB_Red[R]+errorAmplitude && this->red >= limiarRGB_Red[R]-errorAmplitude ) {
-        strcpy(this->currentColor, "red");
     } else {
-
-        strcpy(this->currentColor, "red");
-    }
+        strcpy(this->currentColor, "green");
+    };
 }
