@@ -71,36 +71,21 @@ float *filter(Ultrasonic ultrasonic1, Ultrasonic ultrasonic2, Ultrasonic ultraso
     static float result[3];
 
     // Leitura dos ultrassons e salvando nos vetores
-    long auxValue = 0;//ultrasonic1.timing();
-    float auxReading1 = 0;//ultrasonic1.convert(auxValue, Ultrasonic::CM);
-    int recentValue =  filtered_values1[(filter_index-1 < 0) ? NUM_OF_READINGS - 1 : filter_index - 1];
-    if(abs(auxReading1 - recentValue > 2600))
-    {
-        auxReading1 = (auxReading1 + recentValue) / 2;
-    }
-    auxReading1 = auxReading1 > 4000 ? 4000 : auxReading1;
+    long auxValue = ultrasonic1.timing();
+    float auxReading1 = ultrasonic1.convert(auxValue, Ultrasonic::CM);
+    auxReading1 = auxReading1 > 100 ? 100 : auxReading1;
     auxReading1 = auxReading1 < 0 ? 0 : auxReading1;
     filtered_values1[filter_index] = auxReading1;
 
-    long auxValue2 = 0;//ultrasonic2.timing();
-    float auxReading2 = 0;//ultrasonic2.convert(auxValue2, Ultrasonic::CM);
-    recentValue =  filtered_values2[(filter_index-1 < 0) ? NUM_OF_READINGS - 1 : filter_index - 1];
-    if(abs(auxReading2 - recentValue > 2600))
-    {
-        auxReading2 = (auxReading2 + recentValue) / 2;
-    }
-    auxReading2 = auxReading2 > 4000 ? 4000 : auxReading2;
+    long auxValue2 = ultrasonic2.timing();
+    float auxReading2 = ultrasonic2.convert(auxValue2, Ultrasonic::CM);
+    auxReading2 = auxReading2 > 100 ? 100 : auxReading2;
     auxReading2 = auxReading2 < 0 ? 0 : auxReading2;
     filtered_values2[filter_index] = auxReading2;
 
     long auxValue3 = ultrasonic3.timing();
     float auxReading3 = ultrasonic3.convert(auxValue3, Ultrasonic::CM);
-    recentValue =  filtered_values3[(filter_index-1 < 0) ? NUM_OF_READINGS - 1 : filter_index - 1];
-    if(abs(auxReading3 - recentValue > 2600))
-    {
-        auxReading3 = (auxReading1 + recentValue) / 2;
-    }
-    auxReading3 = auxReading3 > 4000 ? 4000 : auxReading3;
+    auxReading3 = auxReading3 > 100 ? 100 : auxReading3;
     auxReading3 = auxReading3 < 0 ? 0 : auxReading3;
     filtered_values3[filter_index] = auxReading3;
 
