@@ -2,7 +2,7 @@
 #include <Move.h>
 #include <math.h>
 
-#define kp 0.2
+#define kp 0.22
 #define ki 0.75
 
 /*Encoder

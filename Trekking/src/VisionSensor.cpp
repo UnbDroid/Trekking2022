@@ -13,15 +13,18 @@ VisionSensor::VisionSensor(int _pinStart)
 
 int VisionSensor::getAngle()
 {
-    uint8_t newReading;
+    uint8_t newReading = 0;
     int currentPin = 0;
 
-    for(int i = m_pinStart; i < m_pinStart + (8*2); i+=2)
+    for(int i = m_pinStart; i < m_pinStart + (7*2); i+=2)
     {
-        newReading |= digitalRead(i) << currentPin;
+        uint8_t now = digitalRead(i);
+        newReading |= now << (6 - currentPin);
         currentPin += 1;
+        Serial.print(now);
     }
-
+    Serial.println();
+    newReading *= 1.4;
     return newReading;
 }
 
@@ -31,7 +34,7 @@ int VisionSensor::getFilteredAngle()
 
     if(abs(newReading-m_lastReading) > 15)
     {
-        newReading = m_lastReading+(newReading-m_lastReading)/8;
+        newReading = m_lastReading+(newReading-m_lastReading)/2;
     }
     m_lastReading = newReading;
 
