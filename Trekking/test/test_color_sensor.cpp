@@ -30,12 +30,6 @@ void setup()
 
 void loop()
 {
-    // Delay para começar
-    if (firstReading)
-    {
-        firstReading = false;
-        delay(6000);
-    }
     colorSensor->readColor();
     Serial.print("Cor lida: ");
     Serial.println(colorSensor->currentColor);

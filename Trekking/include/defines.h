@@ -5,14 +5,14 @@
 #define pinEnable2 52
 
 #define pin2A 47
-#define pin2B 43
+#define pin2B 39
 #define pin2pwm 3
 #define pin2Enc 19
 
 // Motor Esquerda
 #define pinEnable1 50
 
-#define pin1A 45
+#define pin1A 41
 #define pin1B 49
 #define pin1pwm 2
 #define pin1Enc 18
@@ -34,14 +34,14 @@
 #define US4Trigger 12
 
 // Sensor de cor
-#define ColorSensorS0 39
-#define ColorSensorS1 41
-#define ColorSensorS2 22
-#define ColorSensorS3 24
-#define ColorSensorOut 37
+#define ColorSensorS0 42  
+#define ColorSensorS1 44
+#define ColorSensorS2 46
+#define ColorSensorS3 48
+#define ColorSensorOut 36
 
 // Sensor luminoso -> sinal
-#define SinalLuminoso 53
+#define SinalLuminoso 40
 
 #define EIXO_X 0
 #define EIXO_Y 1

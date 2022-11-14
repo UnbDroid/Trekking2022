@@ -19,7 +19,7 @@ public:
 
     ColorSensor(int ColorSensorS0, int ColorSensorS1, int ColorSensorS2, int ColorSensorS3, int ColorSensorOut);
 
-    ~ColorSensor();
+ //   ~ColorSensor();
 
     void readColor();
 
