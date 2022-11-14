@@ -63,7 +63,7 @@ void ColorSensor::readColor()
 
     Serial.println(string);
 
-    int limiarRGB_Yellow[3] = {150, 150, 200};
+    int limiarRGB_Yellow[3] = {40, 40, 60};
     int limiarRGB_Green[3] = {112, 78, 86};
     int limiarRGB_Red[3] = {33, 84, 66};
     int errorAmplitude = 10;

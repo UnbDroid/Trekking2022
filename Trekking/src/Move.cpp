@@ -1,9 +1,15 @@
 #include <Arduino.h>
 #include <Move.h>
 #include <math.h>
+#include <VisionSensor.h>
+
 
 #define kp 0.22
+#define kpv 0.22
 #define ki 0.75
+
+//VisionSensor camera(VISION_START);
+
 
 /*Encoder
 
@@ -213,11 +219,8 @@ void turnClockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight)
 // Função que gira o robô no sentido antihorário.
 void turnAnticlockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight)
 {
-  stopAll(motorLeft, motorRight);
   motorRight->fwd(_power);
   motorLeft->rev(_power);
-  delay(120);
-  stopAll(motorLeft, motorRight);
 }
 
 // Função que gira o robô de acordo com o graus usando encoders.
@@ -560,4 +563,72 @@ void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, floa
   //     motorRight->fwd(50);
   //   }
   // }
+}
+
+void moveAllpidVision(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef)
+{
+  float powerLeft;
+  float powerRight;
+
+  float lastT = error[1];
+  float lastE = error[0];
+  float deltaT;
+  int cameraResult  =0 ;
+
+
+  //cameraResult = camera.getFilteredAngle();
+  
+
+  // float valueRef = 0;
+  /*if(gyroValue <= 12 && gyroValue >= -12)
+  {
+    gyroValue = 0;
+  }*/
+
+  error[0] = (cameraResult - valueRef); // - giro; // diferença entre os encoderes sendo o error atual
+  error[1] = millis();
+  // Serial.println(error[0]);
+
+  // TESTE
+  Serial.print(" valueRef : ");
+  Serial.print(valueRef);
+  Serial.print(" error[0] : ");
+  Serial.print(error[0]);
+
+
+  deltaT = (error[1] - lastT) / 1000;
+
+  *soma = (*soma) * 0.6 + error[0] * deltaT;
+
+  if ((*soma) * ki > 10)
+  {
+    *soma = 10 / ki;
+  }
+  else if ((*soma) * ki < -10)
+  {
+    *soma = -10 / ki;
+  }
+
+  // powerLeft = abs((_power)) + (error[0] * kp);
+  powerLeft = abs(_power);
+  powerRight = abs((*powerRightL)) - (error[0] * kpv);
+  // powerRight = abs((*powerRightL)) - ((error[0] * kp) + (*soma) * ki);
+
+  powerLeft = (powerLeft > 200) ? 200 : powerLeft;
+  powerRight = (powerRight > 200) ? 200 : powerRight;
+  powerLeft = (powerLeft < 50) ? 50 : powerLeft;
+  powerRight = (powerRight < 50) ? 50 : powerRight;
+
+  // TESTE
+  Serial.print(" powerLeft : ");
+  Serial.print(powerLeft);
+  Serial.print(" powerRight : ");
+  Serial.println(powerRight);
+
+  motorLeft->fwd(powerLeft);
+  motorRight->fwd(powerRight);
+  *powerRightL = (powerRight < powerLeft * 0.4) ? *powerRightL : powerRight;
+  // *powerRightL = powerRight;
+
+
 }

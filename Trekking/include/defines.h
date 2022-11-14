@@ -34,14 +34,14 @@
 #define US4Trigger 12
 
 // Sensor de cor
-#define ColorSensorS0 42
+#define ColorSensorS0 42  
 #define ColorSensorS1 44
-#define ColorSensorS2 22
-#define ColorSensorS3 24
-#define ColorSensorOut 37
+#define ColorSensorS2 46
+#define ColorSensorS3 48
+#define ColorSensorOut 36
 
 // Sensor luminoso -> sinal
-#define SinalLuminoso 53
+#define SinalLuminoso 40
 
 #define EIXO_X 0
 #define EIXO_Y 1
