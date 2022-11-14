@@ -3,6 +3,7 @@
 
 #include <MotorDC.h>
 #include <Gyro.h>
+#include <VisionSensor.h>
 
 #define HORARIO 0
 #define ANTIHORARIO 1
@@ -49,6 +50,15 @@ void turnClockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight);
 
 void turnAnticlockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight);
 
+/* Calculate Final Angle
+  Descricao: Baseado no nosso círculo trigonométrico, calcula o ângulo final no magnetômtero.
+  Parâmetros:
+    - _desiredDegrees: Quantos ângulos a virar.
+    - _currentDegrees: Ângulo atual.
+*/
+
+long calculateFinalAngle(long _desiredDegrees, long _currentDegrees);
+
 /* Turn Degrees
   Descricao: Gira em uma determinada direção, determinada quantidade de graus utilizando os encoders.
   Parâmetros:
@@ -59,15 +69,6 @@ void turnAnticlockwise(int _power, MotorDC *motorLeft, MotorDC *motorRight);
 
 void turnDegrees(int _power, int _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight);
 
-/* turnDegreesGyro
-  Descricao: Welder Gira em uma determinada direção, determinada quantidade de graus utilizando o giroscopio.
-  Parâmetros:
-    - _power: Potência desejada.
-    - _degrees: Quantidade de graus que se deseja girar.
-    - _clock: Direção desejada HORARIO OU ANTIHORARIO
-*/
-
-void turnDegreesGyro(int _power, int _degrees, int _clock, MotorDC *motorLeft, MotorDC *motorRight);
 
 /* turnDegreesGyro2
   Descricao: Função que o David e Arthur tava fazendo Gira em uma determinada direção, determinada quantidade de graus utilizando o giroscopio.
@@ -112,7 +113,7 @@ void moveAllpidGyro(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *
 
 void moveAllpidGyroNew(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef);
 
-void moveAllpidVision(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef);
+void moveAllpidVision(int _power, MotorDC *motorLeft, MotorDC *motorRight, float *soma, float *error, Gyro *giroscopio, long *powerRightL, long valueRef, VisionSensor& _camera);
 
 
 #endif

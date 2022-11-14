@@ -23,6 +23,7 @@ static float sorted_values3[NUM_OF_READINGS] = {100, 100, 100, 100, 100};
 static int filter_index = 0;
 
 float *filter(Ultrasonic ultrasonic1, Ultrasonic ultrasonic2, Ultrasonic ultrasonic3);
+float* simpleProximity(Ultrasonic ultrasonic1, Ultrasonic ultrasonic2, Ultrasonic ultrasonic3);
 void printArray(float values[]);
 
 #endif

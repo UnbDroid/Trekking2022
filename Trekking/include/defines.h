@@ -1,5 +1,6 @@
 #define SCL 20
 #define SDA 21
+#define maxPot 140
 
 // Motor Direita
 #define pinEnable2 52

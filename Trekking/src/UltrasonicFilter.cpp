@@ -137,3 +137,52 @@ float *filter(Ultrasonic ultrasonic1, Ultrasonic ultrasonic2, Ultrasonic ultraso
     // }
     // return filtered_values[0];
 }
+
+float simpleFilter(Ultrasonic _ultrasonic)
+{
+    float result = 0;
+
+    long auxValue = _ultrasonic.timing();
+    float auxReading1 = _ultrasonic.convert(auxValue, Ultrasonic::CM);
+    
+    auxValue = _ultrasonic.timing();
+    float auxReading2 = _ultrasonic.convert(auxValue, Ultrasonic::CM);
+
+    auxValue = _ultrasonic.timing();
+    float auxReading3 = _ultrasonic.convert(auxValue, Ultrasonic::CM);
+
+    //Serial.println(auxReading1);
+    //Serial.println(auxReading2);
+    //Serial.println(auxReading3);
+    //Serial.println("Done");
+
+
+    if(auxReading1 == 0 && auxReading2 != 0 || auxReading1 != 0 && auxReading2 == 0)
+    {
+        if(auxReading3 == 0)
+        {
+            result = 9000;
+            return result;
+        }
+    } 
+    result = (auxReading1+auxReading2+auxReading3)/3;
+    result = (result == 0) ? 9000 : result;
+
+
+    return result;
+}
+
+float* simpleProximity(Ultrasonic ultrasonic1, Ultrasonic ultrasonic2, Ultrasonic ultrasonic3)
+{
+    static float result[3];
+
+    float auxReading2 = simpleFilter(ultrasonic2);
+    result[1] = auxReading2;
+    if(auxReading2 < 45) return result;
+    float auxReading1 = simpleFilter(ultrasonic1);
+    result[0] = auxReading1;
+    if(auxReading1 < 45) return result;
+    float auxReading3 = simpleFilter(ultrasonic3);
+    result[2] = auxReading3;
+    return result;
+}
