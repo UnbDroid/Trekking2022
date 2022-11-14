@@ -5,6 +5,7 @@ VisionSensor::VisionSensor(int _pinStart)
 {
     this->m_pinStart = _pinStart;
 
+    pinMode(37, INPUT);
     for(int i = m_pinStart; i < m_pinStart + (8*2); i+=2)
     {
         pinMode(i, INPUT);
@@ -13,14 +14,19 @@ VisionSensor::VisionSensor(int _pinStart)
 
 int VisionSensor::getAngle()
 {
-    uint8_t newReading;
+    uint8_t newReading = 0;
     int currentPin = 0;
 
+    newReading |= digitalRead(37) << 7;
+    Serial.print(digitalRead(37));
     for(int i = m_pinStart; i < m_pinStart + (8*2); i+=2)
     {
-        newReading |= digitalRead(i) << currentPin;
+        int thpin = digitalRead(i);
+        newReading |= thpin << (6 - currentPin);
         currentPin += 1;
+        Serial.print(thpin);
     }
+    Serial.println();
 
     return newReading;
 }
